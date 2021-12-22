@@ -17,6 +17,11 @@ const userSchema = mongoose.Schema(
       required: true,
       default: false,
     },
+    pictureUrl: {
+      type: String,
+      required: true,
+      default: "",
+    },
     activeWallet: {
       type: [mongoose.Schema.Types.ObjectId],
       required: true,
@@ -29,8 +34,15 @@ const userSchema = mongoose.Schema(
 );
 userSchema.set("collection", "User");
 
-userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+userSchema.methods.matchPassword = async function (
+  enteredPassword,
+  schemaExists = true,
+  prevPassword = ""
+) {
+  return await bcrypt.compare(
+    enteredPassword,
+    schemaExists ? this.password : prevPassword
+  );
 };
 
 userSchema.pre("save", async function (next) {
