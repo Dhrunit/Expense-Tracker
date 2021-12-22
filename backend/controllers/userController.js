@@ -1,5 +1,6 @@
 import HttpError from "../models/http-error.js";
 import User from "../models/userModel.js";
+import generateToken from "../utils/generateToken.js";
 
 // @desc    Register a new user
 // @route   POST /api/users
@@ -23,7 +24,7 @@ const registerUser = async (req, res, next) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      isAdmin: user.isAdmin,
+      token: generateToken(user._id),
     });
   } else {
     res.status(400);
