@@ -1,16 +1,16 @@
+import HttpError from "../models/http-error.js";
 import User from "../models/userModel.js";
 
 // @desc    Register a new user
 // @route   POST /api/users
 // @access  Public
-const registerUser = async (req, res) => {
+const registerUser = async (req, res, next) => {
   const { email, password } = req.body;
 
   const userExists = await User.findOne({ email });
 
   if (userExists) {
-    res.status(400);
-    throw new Error("User already exists");
+    return next(new HttpError("User already exists", 400));
   }
 
   const user = await User.create({
@@ -27,7 +27,7 @@ const registerUser = async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error("Invalid user data");
+    return next(new HttpError("Invalid user data", 400));
   }
 };
 
