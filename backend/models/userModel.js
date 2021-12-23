@@ -23,8 +23,7 @@ const userSchema = mongoose.Schema(
       default: "",
     },
     activeWallet: {
-      type: [mongoose.Schema.Types.ObjectId],
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Wallet",
     },
   },
