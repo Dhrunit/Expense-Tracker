@@ -15,7 +15,7 @@ const addTransaction = async (req, res, next) => {
       new HttpError("Invalid input or data missing in request body", 422)
     );
   }
-  const { wallet, title, date, category, amount, type } = req.body;
+  const { wallet, title, date, category, amount, type, note } = req.body;
   //   validate the wallet Id
   const walletDetails = await Wallet.findById(wallet);
   if (!walletDetails) {
@@ -33,6 +33,7 @@ const addTransaction = async (req, res, next) => {
   const transaction = await Transaction.create({
     user: req.user._id,
     wallet,
+    note,
     month: returnMonth(date.split("/")[1]),
     title,
     date,

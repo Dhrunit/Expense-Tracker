@@ -8,6 +8,7 @@ router.post(
   "/addTransaction",
   body("wallet").isMongoId(),
   body("title").notEmpty(),
+  body("note").notEmpty(),
   body("date").notEmpty(),
   body("category").notEmpty(),
   body("amount").notEmpty().isInt(),
