@@ -35,8 +35,8 @@ const authUser = async (req, res, next) => {
 };
 
 // @desc    Auth user & get token
-// @route   POST /api/users/login
-// @access  Public
+// @route   POST /api/users/changePassword
+// @access  Private
 const changePassword = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
