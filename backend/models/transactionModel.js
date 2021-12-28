@@ -16,13 +16,13 @@ const transactionSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    note: {
+    title: {
       type: String,
       required: true,
       default: "",
     },
     date: {
-      type: Date,
+      type: String,
       required: true,
     },
     category: {
