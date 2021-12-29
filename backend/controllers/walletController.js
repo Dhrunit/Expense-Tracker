@@ -69,7 +69,7 @@ const addWallet = async (req, res, next) => {
 };
 
 // @desc    Auth user & get token
-// @route   POST /api/wallet/editWallet
+// @route   PUT /api/wallet/editWallet
 // @access  Private
 const editWallet = async (req, res, next) => {
   const errors = validationResult(req);
@@ -140,7 +140,7 @@ const editWallet = async (req, res, next) => {
 };
 
 // @desc    Auth user & get token
-// @route   POST /api/wallet/deleteWallet
+// @route   DELETE /api/wallet/deleteWallet
 // @access  Private
 const deleteWallet = async (req, res, next) => {
   const errors = validationResult(req);
@@ -149,7 +149,7 @@ const deleteWallet = async (req, res, next) => {
       new HttpError("Invalid input or data missing in request body", 422)
     );
   }
-  const { walletId } = req.body;
+  const { walletId } = req.params;
 
   // delete the wallet
   const wallet = await Wallet.findByIdAndDelete(walletId);
@@ -163,7 +163,23 @@ const deleteWallet = async (req, res, next) => {
 };
 
 // @desc    Auth user & get token
-// @route   POST /api/wallet/getWallets
+// @route   GET /api/wallet/getWallets
+// @access  Private
+const getWalletById = async (req, res, next) => {
+  let { walletId } = req.params;
+  const walletDetails = await Wallet.findById(walletId);
+  if (!walletDetails) {
+    return next(new HttpError("Incorrect wallet id", 400));
+  }
+  res.status(200).send({
+    success: true,
+    data: walletDetails,
+    message: "Wallet fetched successfully",
+  });
+};
+
+// @desc    Auth user & get token
+// @route   GET /api/wallet/getWallet
 // @access  Private
 const getWalletsForUser = async (req, res, next) => {
   let limit = 10;
@@ -210,4 +226,10 @@ const getWalletsForUser = async (req, res, next) => {
   }
 };
 
-export { addWallet, editWallet, deleteWallet, getWalletsForUser };
+export {
+  addWallet,
+  editWallet,
+  deleteWallet,
+  getWalletsForUser,
+  getWalletById,
+};
