@@ -4,6 +4,7 @@ import {
   addWallet,
   deleteWallet,
   editWallet,
+  getWalletById,
   getWalletsForUser,
 } from "../controllers/walletController.js";
 const router = express.Router();
@@ -38,12 +39,9 @@ router.put(
   editWallet
 );
 
-router.delete(
-  "/deleteWallet",
-  body("walletId").isMongoId(),
-  protect,
-  deleteWallet
-);
+router.get("/getWallet/:walletId", protect, getWalletById);
+
+router.delete("/deleteWallet/:walletId", protect, deleteWallet);
 
 router.get("/getWallets", protect, getWalletsForUser);
 
