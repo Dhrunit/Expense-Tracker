@@ -3,6 +3,7 @@ import HttpError from "../models/http-error.js";
 import moment from "moment";
 import Wallet from "../models/walletModel.js";
 import User from "../models/userModel.js";
+import Transaction from "../models/transactionModel.js";
 
 // @desc    Auth user & get token
 // @route   POST /api/wallet/addWallet
@@ -152,6 +153,10 @@ const deleteWallet = async (req, res, next) => {
   const { walletId } = req.params;
 
   // delete the wallet
+  const transaction = await Transaction.deleteMany({ wallet: walletId });
+  if (!transaction) {
+    return next(new HttpError("Linked transaction deletion failed", 400));
+  }
   const wallet = await Wallet.findByIdAndDelete(walletId);
   if (!wallet) {
     return next(new HttpError("Wallet delete failed", 400));

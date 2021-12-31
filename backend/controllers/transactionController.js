@@ -153,6 +153,9 @@ const deleteTransaction = async (req, res, next) => {
   } else {
     walletDetails.balance += transactionDetails.amount;
   }
+  walletDetails.transactions = walletDetails.transactions.filter(
+    (transactionId) => transactionId.toString() !== req.params.transactionId
+  );
   const walletUpdated = await Wallet.findByIdAndUpdate(
     walletDetails._id,
     walletDetails
@@ -219,9 +222,56 @@ const getTransactionsForUser = async (req, res, next) => {
   });
 };
 
+// @desc    Auth user & get token
+// @route   POST /api/transaction/getChartDetails
+// @access  Private
+const getTransactionsForChart = async (req, res, next) => {
+  const { month } = req.params;
+  if (!month || !month.trim()) {
+    return next(new HttpError("month missing in query params", 422));
+  }
+  const transactions = await Transaction.find({
+    user: req.user.id,
+    month: month.toLowerCase(),
+  }).select(["title", "date", "amount"]);
+  if (!transactions) {
+    return next(
+      new HttpError("An error occured while fetching transactions", 400)
+    );
+  }
+  res.send({
+    success: true,
+    data: transactions,
+    message: "Transaction fetched successfully",
+  });
+};
+
+// @desc    Auth user & get token
+// @route   POST /api/transaction/getTransaction
+// @access  Private
+const getTransactionById = async (req, res, next) => {
+  const { transactionId } = req.params;
+  if (!transactionId || !transactionId.trim()) {
+    return next(new HttpError("transactionId missing in query params", 422));
+  }
+  const transaction = await Transaction.findById(transactionId);
+  if (!transaction) {
+    return next(
+      new HttpError("An error occured while fetching transactions", 400)
+    );
+  }
+  res.send({
+    success: true,
+    data: transaction,
+    message: "Transaction fetched successfully",
+  });
+};
+
 export {
   addTransaction,
   editTransaction,
   deleteTransaction,
   getTransactionsForUser,
+  getTransactionsForChart,
+  getTransactionById,
 };
