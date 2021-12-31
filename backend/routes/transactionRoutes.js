@@ -4,6 +4,8 @@ import {
   addTransaction,
   deleteTransaction,
   editTransaction,
+  getTransactionById,
+  getTransactionsForChart,
   getTransactionsForUser,
 } from "../controllers/transactionController.js";
 const router = express.Router();
@@ -38,5 +40,9 @@ router.put(
 router.delete("/deleteTransaction/:transactionId", protect, deleteTransaction);
 
 router.get("/getTransactions/:walletId", protect, getTransactionsForUser);
+
+router.get("/getChartDetails/:month", protect, getTransactionsForChart);
+
+router.get("/getTransaction/:transactionId", protect, getTransactionById);
 
 export default router;
