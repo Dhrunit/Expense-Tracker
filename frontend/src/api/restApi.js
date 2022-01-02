@@ -29,11 +29,7 @@ export default class RestApi {
         let result = await axios.post(url, body, this.config);
         return result;
       }
-      let result = await axios.post(url, body, {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
+      let result = await axios.post(url, body);
       return result;
     } catch (error) {
       return false;

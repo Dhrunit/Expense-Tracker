@@ -16,6 +16,13 @@ export const login = (email, password) => async (dispatch) => {
       email,
       password,
     });
+    if (!result) {
+      dispatch({
+        type: LOGIN_FAIL,
+      });
+      dispatch(setAlert("Invalid credentials", "error"));
+      return;
+    }
     dispatch({
       type: LOGIN_SUCCESS,
       payload: result.data,
@@ -25,6 +32,6 @@ export const login = (email, password) => async (dispatch) => {
     dispatch({
       type: LOGIN_FAIL,
     });
-    dispatch(setAlert("sadsadas", "error"));
+    dispatch(setAlert("Internal Server Error", "error"));
   }
 };

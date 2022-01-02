@@ -17,6 +17,7 @@ import { login } from "../../redux/actions/authActions";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState([]);
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
@@ -62,7 +63,7 @@ export default function Login() {
                 value={email}
                 error={error.includes("email")}
                 onChange={(evt) => setEmail(evt.target.value)}
-                errorText={error.includes("email") && "Email invalid"}
+                errorText={error.includes("email") && "Email is invalid"}
               />
               <Form
                 type={"password"}
@@ -75,6 +76,8 @@ export default function Login() {
                   error.includes("password") &&
                   "Password should be minimum of 6 characters"
                 }
+                passwordVisible={passwordVisible}
+                setPasswordVisible={setPasswordVisible}
               />
               <div
                 style={{
@@ -86,7 +89,11 @@ export default function Login() {
               >
                 Forgot Password
               </div>
-              <Button type="contained" onClick={loginUser}>
+              <Button
+                type="contained"
+                onClick={loginUser}
+                disabled={auth.loading}
+              >
                 {auth.loading ? <CircularProgress /> : "Sign In"}
               </Button>
               <div
