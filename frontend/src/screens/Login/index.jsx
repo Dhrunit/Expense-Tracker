@@ -33,7 +33,7 @@ export default function Login() {
     } else {
       setError(error.filter((err) => err !== "password"));
     }
-    if (isEmail && password.trim().length > 6) {
+    if (isEmail && password.trim().length >= 6) {
       setError([]);
       dispatch(login(email, password));
     }
