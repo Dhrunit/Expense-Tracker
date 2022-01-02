@@ -1,7 +1,8 @@
 import { Grid } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useDispatch, useSelector } from "react-redux";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import RestApi from "../../api/restApi";
 import {
   AuthContainer,
   BrandHeading,
@@ -11,11 +12,14 @@ import Button from "../../components/Button";
 import Card from "../../components/Card";
 import Form from "../../components/Form";
 import { validateEmail } from "../../utils/validateEmail";
+import { login } from "../../redux/actions/authActions";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState([]);
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
   const loginUser = async () => {
     let isEmail = validateEmail(email);
     if (!isEmail) {
@@ -30,13 +34,7 @@ export default function Login() {
     }
     if (isEmail && password.trim().length > 6) {
       setError([]);
-      let result = await new RestApi().post(
-        "http://localhost:5000/api/users/login",
-        {
-          email,
-          password,
-        }
-      );
+      dispatch(login(email, password));
     }
   };
   return (
@@ -89,7 +87,7 @@ export default function Login() {
                 Forgot Password
               </div>
               <Button type="contained" onClick={loginUser}>
-                Sign In
+                {auth.loading ? <CircularProgress /> : "Sign In"}
               </Button>
               <div
                 style={{
