@@ -1,13 +1,46 @@
-body {
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: soraRegular;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@font-face {
+  font-family: soraRegular;
+  src: url("./assets/fonts/Sora-Regular.ttf");
+}
+
+@font-face {
+  font-family: soraBold;
+  src: url("./assets/fonts/Sora-Bold.ttf");
+}
+
+@font-face {
+  font-family: soraExtraBold;
+  src: url("./assets/fonts/Sora-ExtraBold.ttf");
+}
+
+@font-face {
+  font-family: soraExtraLight;
+  src: url("./assets/fonts/Sora-ExtraLight.ttf");
+}
+
+@font-face {
+  font-family: soraLight;
+  src: url("./assets/fonts/Sora-Light.ttf");
+}
+
+@font-face {
+  font-family: soraMedium;
+  src: url("./assets/fonts/Sora-Medium.ttf");
+}
+
+@font-face {
+  font-family: soraSemiBold;
+  src: url("./assets/fonts/Sora-SemiBold.ttf");
+}
+
+@font-face {
+  font-family: soraThin;
+  src: url("./assets/fonts/Sora-Thin.ttf");
 }
