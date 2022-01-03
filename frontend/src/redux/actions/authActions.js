@@ -23,7 +23,9 @@ export const login = (email, password) => async (dispatch) => {
       dispatch(setAlert("Invalid credentials", "error"));
       return;
     }
-    localStorage.setItem("ExpTrackerToken", result.data.data.token);
+    setTimeout(() => {
+      localStorage.setItem("ExpTrackerToken", result.data.data.token);
+    }, 500);
     dispatch({
       type: LOGIN_SUCCESS,
       payload: result.data,
@@ -53,7 +55,9 @@ export const register = (email, password) => async (dispatch) => {
       dispatch(setAlert("Something went wrong", "error"));
       return;
     }
-    localStorage.setItem("ExpTrackerToken", result.data.data.token);
+    setTimeout(() => {
+      localStorage.setItem("ExpTrackerToken", result.data.data.token);
+    }, 500);
     dispatch({
       type: LOGIN_SUCCESS,
       payload: result.data,
