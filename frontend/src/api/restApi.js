@@ -6,7 +6,6 @@ export default class RestApi {
     this.config = {
       headers: {
         Authorization: `Bearer ${getAuthToken()}`,
-        "Access-Control-Allow-Origin": "*",
       },
     };
   }

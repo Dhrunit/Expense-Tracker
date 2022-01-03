@@ -5,9 +5,8 @@ export const AuthContainer = styled.div`
   background: url(${AuthBackground});
   height: 100vh;
   width: 100vw;
-  background-repeat: repeat-x;
+  overflow-x: hidden;
   background-size: cover;
-  margin: 0;
 `;
 
 export const BrandHeading = styled.h1`
