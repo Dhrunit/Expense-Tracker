@@ -1,5 +1,6 @@
 import RestApi from "../../api/restApi";
 import url from "../../api/url";
+import getUserDetails from "../../utils/getUserDetails";
 import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
@@ -24,11 +25,14 @@ export const login = (email, password) => async (dispatch) => {
       return;
     }
     setTimeout(() => {
-      localStorage.setItem("ExpTrackerToken", result.data.data.token);
+      localStorage.setItem(
+        "ExpTrackerDetails",
+        JSON.stringify(result.data.data)
+      );
     }, 500);
     dispatch({
       type: LOGIN_SUCCESS,
-      payload: result.data,
+      payload: result.data.data,
     });
     dispatch(setAlert(result.data.message, "success"));
   } catch (error) {
@@ -56,7 +60,7 @@ export const register = (email, password) => async (dispatch) => {
       return;
     }
     setTimeout(() => {
-      localStorage.setItem("ExpTrackerToken", result.data.data.token);
+      localStorage.setItem("ExpTrackerToken", JSON.stringify(result.data.data));
     }, 500);
     dispatch({
       type: LOGIN_SUCCESS,
@@ -68,5 +72,25 @@ export const register = (email, password) => async (dispatch) => {
       type: LOGIN_FAIL,
     });
     dispatch(setAlert("Internal Server Error", "error"));
+  }
+};
+
+export const isRegistered = () => async (dispatch) => {
+  console.log("asdasdas");
+  try {
+    let userDetails = getUserDetails();
+    console.log(userDetails, "userDetails");
+    if (!userDetails) {
+      localStorage.clear();
+      window.location.reload();
+      return;
+    }
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: userDetails,
+    });
+  } catch (error) {
+    localStorage.clear();
+    window.location.reload();
   }
 };

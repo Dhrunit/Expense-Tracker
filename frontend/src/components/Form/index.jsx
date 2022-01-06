@@ -3,6 +3,7 @@ import { ErrorText } from "./style";
 import React from "react";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+import SearchIcon from "@mui/icons-material/Search";
 const Form = ({
   type,
   name,
@@ -15,6 +16,30 @@ const Form = ({
   passwordVisible = false,
   setPasswordVisible = false,
 }) => {
+  if (type === "search") {
+    return (
+      <FormControl fullWidth variant="outlined">
+        <OutlinedInput
+          sx={{
+            height: "2.5rem",
+            background: "#fff",
+            border: "none",
+            fontSize: "12px",
+            margin: "0",
+          }}
+          variant="primary"
+          error={error}
+          type={"text"}
+          name={name}
+          value={value}
+          placeholder={placeHolder}
+          startAdornment={<SearchIcon sx={{ color: "#979797" }} />}
+          onChange={onChange}
+        />
+        <ErrorText>{errorText}</ErrorText>
+      </FormControl>
+    );
+  }
   return (
     <>
       <Grid container sx={{ mt: 3 }}>

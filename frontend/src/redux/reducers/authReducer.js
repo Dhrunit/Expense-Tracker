@@ -17,7 +17,7 @@ const authReducer = (
       return { ...state, loading: false };
     case LOGIN_SUCCESS:
       return {
-        userDetails: payload.data,
+        userDetails: payload,
         loading: false,
         isAuthenticated: true,
       };
