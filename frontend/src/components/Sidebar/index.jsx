@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-import { useMediaQuery, useTheme } from "@mui/material";
 import getUserDetails from "../../utils/getUserDetails";
 import LargeDevicesSidebar from "./LargeDevicesSidebar";
 import SmallDevicesSidebar from "./SmallDevicesSidebar";
-const Sidebar = ({ collapsed, setCollapsed }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+const Sidebar = ({ collapsed, setCollapsed, isMobile }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
   const [search, setSearch] = useState("");

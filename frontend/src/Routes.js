@@ -1,3 +1,4 @@
+import { useMediaQuery, useTheme } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -15,18 +16,40 @@ const AppRoutes = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(isRegistered());
-  }, []);
+  }, [dispatch]);
   const [collapsed, setCollapsed] = useState(true);
   let token = getAuthToken();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   if (token) {
     return (
       <Router>
-        <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />;
+        <Sidebar
+          collapsed={collapsed}
+          setCollapsed={setCollapsed}
+          isMobile={isMobile}
+        />
         <Routes>
-          <Route path="/" element={<Dashboard />} exact />
-          <Route path="/profile" element={<Profile />} exact />
-          <Route path="/wallet" element={<Wallet />} exact />
-          <Route path="/transactions" element={<Transactions />} exact />
+          <Route
+            path="/"
+            element={<Dashboard collapsed={collapsed} isMobile={isMobile} />}
+            exact
+          />
+          <Route
+            path="/profile"
+            element={<Profile collapsed={collapsed} isMobile={isMobile} />}
+            exact
+          />
+          <Route
+            path="/wallet"
+            element={<Wallet collapsed={collapsed} isMobile={isMobile} />}
+            exact
+          />
+          <Route
+            path="/transactions"
+            element={<Transactions collapsed={collapsed} isMobile={isMobile} />}
+            exact
+          />
         </Routes>
       </Router>
     );

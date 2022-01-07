@@ -76,13 +76,10 @@ export const register = (email, password) => async (dispatch) => {
 };
 
 export const isRegistered = () => async (dispatch) => {
-  console.log("asdasdas");
   try {
     let userDetails = getUserDetails();
-    console.log(userDetails, "userDetails");
     if (!userDetails) {
       localStorage.clear();
-      window.location.reload();
       return;
     }
     dispatch({
