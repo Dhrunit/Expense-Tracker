@@ -1,6 +1,6 @@
 import HttpError from "../models/http-error.js";
 import Wallet from "../models/walletModel.js";
-import moment from "moment";
+
 // @desc    Auth user & get token
 // @route   GET /api/getDashboardDetails/:month
 // @access  Private
@@ -94,7 +94,7 @@ const getDashboardDetails = async (req, res, next) => {
           100;
       }
     }
-    res.send({
+    res.status(200).send({
       success: true,
       data: dataToSend,
       message: "Dashboard details fetched successfully",

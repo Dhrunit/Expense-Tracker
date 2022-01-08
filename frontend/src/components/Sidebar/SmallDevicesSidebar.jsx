@@ -72,7 +72,7 @@ const SmallDevicesSidebar = ({
           ))}
         </List>
       </StyledDrawerMobile>
-      <StyledAppBarMobile position="static" elevation={0} collapsed={collapsed}>
+      <StyledAppBarMobile position="fixed" elevation={0} collapsed={collapsed}>
         <div
           style={{
             display: "flex",

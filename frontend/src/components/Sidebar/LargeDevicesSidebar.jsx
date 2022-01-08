@@ -72,7 +72,7 @@ const LargeDevicesSidebar = ({
           ))}
         </List>
       </StyledDrawer>
-      <StyledAppBar position="static" elevation={0} collapsed={collapsed}>
+      <StyledAppBar position="fixed" elevation={0} collapsed={collapsed}>
         <div
           style={{
             display: "flex",

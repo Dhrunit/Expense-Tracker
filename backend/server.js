@@ -13,6 +13,7 @@ import { errorHandler, notFound } from "./middlewares/errorMiddleware.js";
 
 dotenv.config();
 connectDB();
+app.disable("etag");
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));

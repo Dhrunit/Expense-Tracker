@@ -15,7 +15,16 @@ export const getDashboardDetails = () => async (dispatch) => {
       type: SET_LOADER_DASHBOARD,
     });
     let month = returnMonth(new Date().getMonth());
-    let result = await new RestApi().get(url.getDashboardDetails, true, month);
+    let currentDate = new Date();
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    const previousMonth = currentDate
+      .toLocaleString("default", { month: "long" })
+      .toLowerCase();
+    let result = await new RestApi().get(
+      url.getDashboardDetails,
+      true,
+      month + "/" + previousMonth
+    );
     if (result.status === 401) {
       dispatch(setAlert("You are not authorized, Please login again", "error"));
     }
@@ -24,6 +33,7 @@ export const getDashboardDetails = () => async (dispatch) => {
         type: GET_DASHBOARD_DETAILS_SUCCESS,
         payload: result.data.data,
       });
+      return;
     }
     if (
       result.status === 400 &&
@@ -32,6 +42,11 @@ export const getDashboardDetails = () => async (dispatch) => {
       dispatch({
         type: NEW_USER_DASHBOARD,
       });
+    } else {
+      dispatch({
+        type: GET_DASHBOARD_DETAILS_FAIL,
+      });
+      dispatch(setAlert("Internal Server Error", "error"));
     }
   } catch (error) {
     dispatch({
