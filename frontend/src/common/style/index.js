@@ -26,3 +26,31 @@ export const BrandSvgImage = () => {
     />
   );
 };
+
+export const MainContent = ({ collapsed, children, isMobile }) => {
+  if (isMobile) {
+    return (
+      <div
+        style={{
+          paddingLeft: 0,
+          transition: "all 0.3s",
+          margin: "0 2rem",
+        }}
+      >
+        {children}
+      </div>
+    );
+  } else {
+    return (
+      <div
+        style={{
+          paddingLeft: collapsed ? "70px" : "230px",
+          margin: "0 2rem",
+          transition: "all 0.3s",
+        }}
+      >
+        {children}
+      </div>
+    );
+  }
+};

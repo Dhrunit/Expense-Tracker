@@ -1,7 +1,7 @@
 import React from "react";
 import { PrimaryButton } from "./style";
 
-const Button = ({ type, onClick, children, disabled }) => {
+const Button = ({ type, onClick, children, disabled, styles }) => {
   if (type === "contained") {
     return (
       <PrimaryButton
@@ -13,14 +13,17 @@ const Button = ({ type, onClick, children, disabled }) => {
       </PrimaryButton>
     );
   } else {
-    <PrimaryButton
-      disabled={disabled}
-      fullWidth
-      variant="outlined"
-      onClick={onClick}
-    >
-      <span style={{ textTransform: "none" }}>{children}</span>
-    </PrimaryButton>;
+    return (
+      <PrimaryButton
+        disabled={disabled}
+        fullWidth
+        variant="outlined"
+        onClick={onClick}
+        sx={styles}
+      >
+        <span style={{ textTransform: "none" }}>{children}</span>
+      </PrimaryButton>
+    );
   }
 };
 

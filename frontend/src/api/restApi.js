@@ -9,8 +9,11 @@ export default class RestApi {
       },
     };
   }
-  get = async (url, isAuth = false) => {
+  get = async (url, isAuth = false, appendString = false) => {
     try {
+      if (appendString) {
+        url += appendString;
+      }
       if (isAuth) {
         let result = await axios.get(url, this.config);
         return result;
@@ -18,7 +21,7 @@ export default class RestApi {
       let result = await axios.get(url);
       return result;
     } catch (error) {
-      return false;
+      return error.response;
     }
   };
 

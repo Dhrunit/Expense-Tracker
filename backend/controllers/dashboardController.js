@@ -2,15 +2,20 @@ import HttpError from "../models/http-error.js";
 import Wallet from "../models/walletModel.js";
 
 // @desc    Auth user & get token
-// @route   POST /api/transaction/addTransaction
+// @route   GET /api/getDashboardDetails/:month
 // @access  Private
 const getDashboardDetails = async (req, res, next) => {
   try {
     const { activeWallet: userWalletId } = req.user;
-    const { month } = req.params;
+    const { month, previousMonth } = req.params;
+    let totalIncomeInPreviusMonth = 0;
+    let totalExpenseInPreviusMonth = 0;
     let dataToSend = {
       income: 0,
       expense: 0,
+      currency: "",
+      percentageIncome: 0,
+      percentageExpense: 0,
       balance: { remaining: 0, underBudget: null },
       chartData: {
         januray: { income: 0, expense: 0 },
@@ -35,6 +40,7 @@ const getDashboardDetails = async (req, res, next) => {
         new HttpError("Failed to fetch the active wallet details", 400)
       );
     }
+    dataToSend.currency = walletDetails.currency;
     dataToSend.balance.remaining = walletDetails.balance;
     if (walletDetails.hasBudget) {
       dataToSend.balance.underBudget =
@@ -60,8 +66,35 @@ const getDashboardDetails = async (req, res, next) => {
           dataToSend.chartData[transaction.month].expense += transaction.amount;
         }
       }
+      if (
+        transaction.type === "income" &&
+        previousMonth === month.toLowerCase()
+      ) {
+        totalIncomeInPreviusMonth += transaction.amount;
+      } else if (
+        transaction.type === "expense" &&
+        previousMonth === month.toLowerCase()
+      ) {
+        totalExpenseInPreviusMonth += transaction.amount;
+      }
+      if (dataToSend.income === totalIncomeInPreviusMonth) {
+        dataToSend.percentageIncome = 0;
+      } else {
+        dataToSend.percentageIncome =
+          ((dataToSend.income - totalIncomeInPreviusMonth) /
+            totalIncomeInPreviusMonth) *
+          100;
+      }
+      if (dataToSend.expense === totalExpenseInPreviusMonth) {
+        dataToSend.percentageExpense = 0;
+      } else {
+        dataToSend.percentageExpense =
+          ((dataToSend.income - totalExpenseInPreviusMonth) /
+            totalExpenseInPreviusMonth) *
+          100;
+      }
     }
-    res.send({
+    res.status(200).send({
       success: true,
       data: dataToSend,
       message: "Dashboard details fetched successfully",

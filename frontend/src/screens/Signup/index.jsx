@@ -2,7 +2,7 @@ import { Grid } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   AuthContainer,
   BrandHeading,
@@ -18,6 +18,7 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setconfirmPasswordVisible] = useState(false);
   const [error, setError] = useState([]);
@@ -45,6 +46,9 @@ export default function Signup() {
     ) {
       setError([]);
       dispatch(register(email, password));
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     }
   };
   return (

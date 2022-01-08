@@ -1,5 +1,9 @@
 const getAuthToken = () => {
-  return localStorage.getItem("ExpTrackerToken");
+  let data = JSON.parse(localStorage.getItem("ExpTrackerDetails"));
+  if (!data) {
+    return false;
+  }
+  return data.token.trim();
 };
 
 export default getAuthToken;

@@ -26,6 +26,7 @@ const authUser = async (req, res, next) => {
           _id: user._id,
           email: user.email,
           isAdmin: user.isAdmin,
+          pictureUrl: user.pictureUrl,
           token: generateToken(user._id),
         },
         message: "Login successful",
