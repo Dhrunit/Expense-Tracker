@@ -15,6 +15,9 @@ const Form = ({
   errorText,
   passwordVisible = false,
   setPasswordVisible = false,
+  disabled = false,
+  customStyle = false,
+  autoComplete = true,
 }) => {
   if (type === "search") {
     return (
@@ -35,6 +38,8 @@ const Form = ({
           placeholder={placeHolder}
           startAdornment={<SearchIcon sx={{ color: "#979797" }} />}
           onChange={onChange}
+          disabled={disabled}
+          autoComplete={autoComplete}
         />
         <ErrorText>{errorText}</ErrorText>
       </FormControl>
@@ -70,10 +75,12 @@ const Form = ({
                     )}
                   </IconButton>
                 }
+                disabled={disabled}
+                autoComplete={autoComplete}
               />
             ) : (
               <OutlinedInput
-                sx={{ height: "3.2rem" }}
+                sx={{ height: "3.2rem", ...customStyle }}
                 variant="primary"
                 error={error}
                 type={type}
@@ -81,6 +88,8 @@ const Form = ({
                 value={value}
                 placeholder={placeHolder}
                 onChange={onChange}
+                disabled={disabled}
+                autoComplete={autoComplete}
               />
             )}
 

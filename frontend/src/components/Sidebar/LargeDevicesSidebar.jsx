@@ -99,6 +99,8 @@ const LargeDevicesSidebar = ({
               type={"search"}
               placeHolder={"Search"}
               value={search}
+              autoComplete={false}
+              name="search"
               onChange={(evt) => setSearch(evt.target.value)}
             />
             <div

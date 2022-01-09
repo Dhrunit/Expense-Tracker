@@ -25,7 +25,7 @@ export default class RestApi {
     }
   };
 
-  post = async (url, body, isAuth) => {
+  post = async (url, body, isAuth = false) => {
     try {
       if (isAuth) {
         let result = await axios.post(url, body, this.config);
@@ -34,7 +34,7 @@ export default class RestApi {
       let result = await axios.post(url, body);
       return result;
     } catch (error) {
-      return false;
+      return error.response;
     }
   };
 

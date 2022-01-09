@@ -97,9 +97,11 @@ const SmallDevicesSidebar = ({
           >
             <Form
               type={"search"}
+              name="search"
               placeHolder={"Search"}
               value={search}
               onChange={(evt) => setSearch(evt.target.value)}
+              autoComplete={false}
             />
             <div
               style={{

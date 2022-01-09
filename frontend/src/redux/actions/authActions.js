@@ -91,3 +91,28 @@ export const isRegistered = () => async (dispatch) => {
     window.location.reload();
   }
 };
+
+export const changePasswordRequest =
+  (password, setLoading) => async (dispatch) => {
+    try {
+      setLoading(true);
+      let result = await new RestApi().post(
+        url.changePassword,
+        {
+          password,
+        },
+        true
+      );
+      if (result.status === 401) {
+        localStorage.clear();
+        return;
+      }
+      setLoading(false);
+      dispatch(
+        setAlert(result.data.message, result.data.success ? "success" : "error")
+      );
+    } catch (error) {
+      localStorage.clear();
+      window.location.reload();
+    }
+  };
