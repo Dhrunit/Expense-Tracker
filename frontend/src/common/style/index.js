@@ -34,7 +34,7 @@ export const MainContent = ({ collapsed, children, isMobile }) => {
         style={{
           paddingLeft: 0,
           transition: "all 0.3s",
-          margin: "0 2rem",
+          margin: "2.5rem 2rem",
         }}
       >
         {children}
@@ -45,7 +45,7 @@ export const MainContent = ({ collapsed, children, isMobile }) => {
       <div
         style={{
           paddingLeft: collapsed ? "70px" : "230px",
-          margin: "0 2rem",
+          margin: "2.5rem 2rem",
           transition: "all 0.3s",
         }}
       >

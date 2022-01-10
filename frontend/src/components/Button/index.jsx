@@ -8,6 +8,7 @@ const Button = ({ type, onClick, children, disabled, styles }) => {
         fullWidth
         variant="contained"
         onClick={!disabled && onClick}
+        sx={styles}
       >
         <span style={{ textTransform: "none" }}>{children}</span>
       </PrimaryButton>
