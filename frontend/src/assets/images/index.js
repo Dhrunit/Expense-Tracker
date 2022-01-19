@@ -6,8 +6,8 @@ const EmptyDataSvgImg = ({ styles }) => {
 };
 
 const StyledEmptySvg = styled.img`
-  width: 35%;
-  margin: 0 auto;
+  width: 40%;
+  margin: 1rem auto;
   @media (max-width: 1200px) {
     width: 45%;
     margin-top: 1rem;
