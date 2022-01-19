@@ -17,11 +17,17 @@ export const login = (email, password) => async (dispatch) => {
       email,
       password,
     });
-    if (!result) {
+    if (result.status === 401) {
       dispatch({
         type: LOGIN_FAIL,
       });
       dispatch(setAlert("Invalid credentials", "error"));
+      return;
+    } else if (!result.data.success) {
+      dispatch({
+        type: LOGIN_FAIL,
+      });
+      dispatch(setAlert("Internal server error", "error"));
       return;
     }
     setTimeout(() => {
@@ -59,9 +65,6 @@ export const register = (email, password) => async (dispatch) => {
       dispatch(setAlert("Something went wrong", "error"));
       return;
     }
-    setTimeout(() => {
-      localStorage.setItem("ExpTrackerToken", JSON.stringify(result.data.data));
-    }, 500);
     dispatch({
       type: LOGIN_SUCCESS,
       payload: result.data,

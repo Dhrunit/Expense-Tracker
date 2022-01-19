@@ -50,11 +50,11 @@ const LargeDevicesSidebar = ({
         </div>
         <List>
           {sidebarArray.map((element, index) => (
-            <ListItem button key={element.name} sx={{ height: "3.5rem" }}>
-              <Link
-                to={element.to}
-                style={{ textDecoration: "none", color: "#fff" }}
-              >
+            <Link
+              to={element.to}
+              style={{ textDecoration: "none", color: "#fff" }}
+            >
+              <ListItem button key={element.name} sx={{ height: "3.5rem" }}>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <ListItemIcon
                     sx={{
@@ -67,8 +67,8 @@ const LargeDevicesSidebar = ({
                   </ListItemIcon>
                   {!collapsed && <ListItemText primary={element.name} />}
                 </div>
-              </Link>
-            </ListItem>
+              </ListItem>
+            </Link>
           ))}
         </List>
       </StyledDrawer>
