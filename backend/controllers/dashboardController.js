@@ -45,6 +45,8 @@ const getDashboardDetails = async (req, res, next) => {
     if (walletDetails.hasBudget) {
       dataToSend.balance.underBudget =
         walletDetails.balance > walletDetails.budgetAmount;
+    } else {
+      dataToSend.balance.underBudget = null;
     }
     for (const transaction of walletDetails.transactions) {
       if (

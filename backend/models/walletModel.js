@@ -22,12 +22,10 @@ const walletSchema = mongoose.Schema(
     },
     hasBudget: {
       type: Boolean,
-      required: true,
       default: false,
     },
     budgetAmount: {
       type: Number,
-      required: true,
       default: 0,
     },
     resetBalance: {
@@ -42,7 +40,6 @@ const walletSchema = mongoose.Schema(
     },
     resetPeriod: {
       type: String,
-      required: true,
       default: "",
     },
     activeDate: {
@@ -51,7 +48,6 @@ const walletSchema = mongoose.Schema(
     },
     resetTime: {
       type: String,
-      required: true,
       default: "",
     },
     transactions: {

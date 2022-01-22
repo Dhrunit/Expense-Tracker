@@ -29,13 +29,18 @@ const addWallet = async (req, res, next) => {
 
     //   Calculate reset time
     let resetTime;
-    if (resetPeriod.toLowerCase() === "monthly") {
-      resetTime = moment().add(1, "months").format();
-    } else if (resetPeriod.toLowerCase() === "weekly") {
-      resetTime = moment().add(1, "weeks").format();
+    if (resetBalance) {
+      if (resetPeriod.toLowerCase() === "monthly") {
+        resetTime = moment().add(1, "months").format();
+      } else if (resetPeriod.toLowerCase() === "weekly") {
+        resetTime = moment().add(1, "weeks").format();
+      } else {
+        resetTime = moment().add(1, "years").format();
+      }
     } else {
-      resetTime = moment().add(1, "years").format();
+      resetTime = null;
     }
+
     // create a wallet
     const wallet = await Wallet.create({
       user: req.user._id,
@@ -45,7 +50,7 @@ const addWallet = async (req, res, next) => {
       hasBudget,
       budgetAmount,
       resetBalance,
-      resetPeriod,
+      resetPeriod: resetBalance ? resetPeriod : "",
       isActiveWallet,
       activeDate: moment().format(),
       resetTime,
@@ -69,6 +74,7 @@ const addWallet = async (req, res, next) => {
       message: "Wallet added successfully",
     });
   } catch (error) {
+    console.log(error);
     return next(new HttpError("Internal Server error", 500));
   }
 };
