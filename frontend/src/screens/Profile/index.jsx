@@ -50,161 +50,159 @@ const Profile = ({ isMobile, collapsed }) => {
   };
   return (
     <MainContent isMobile={isMobile} collapsed={collapsed}>
-      <div style={{ padding: "1rem" }}>
-        <h2 style={{ margin: "1rem 0" }}>PROFILE</h2>
-        <Grid container spacing={4} justifyContent={"space-between"}>
-          <Grid item xl={7} lg={7} md={12} sm={12} xs={12}>
-            <Paper
-              elevation={3}
-              sx={{ padding: "1rem 2rem", textAlign: "center" }}
+      <h2 style={{ margin: "1rem 0", fontFamily: "soraBold" }}>PROFILE</h2>
+      <Grid container spacing={4} justifyContent={"space-between"}>
+        <Grid item xl={7} lg={7} md={12} sm={12} xs={12}>
+          <Paper
+            elevation={3}
+            sx={{ padding: "1rem 2rem", textAlign: "center" }}
+          >
+            <h3
+              style={{
+                margin: "0.5rem",
+                fontFamily: "soraSemiBold",
+              }}
             >
-              <h3
-                style={{
-                  margin: "0.5rem",
-                  fontFamily: "soraSemiBold",
-                }}
+              User details
+            </h3>
+            <img
+              style={{ width: "50%", marginBottom: "0.5rem" }}
+              src={userDetails.pictureUrl}
+              alt="profile_image"
+            />
+            <Form
+              type={"text"}
+              label={"Email"}
+              placeHolder={"Your Email"}
+              value={userDetails.email}
+              disabled={true}
+              customStyle={{ height: "3rem !important" }}
+            />
+            <div
+              style={{
+                maxWidth: isMobileSm ? "80%" : "25%",
+                marginTop: "0.5rem",
+              }}
+            >
+              <Button
+                type="contained"
+                styles={{ height: "3rem" }}
+                onClick={() => setChangePasswordModal(!changePasswordModal)}
               >
-                User details
-              </h3>
-              <img
-                style={{ width: "50%", marginBottom: "0.5rem" }}
-                src={userDetails.pictureUrl}
-                alt="profile_image"
-              />
-              <Form
-                type={"text"}
-                label={"Email"}
-                placeHolder={"Your Email"}
-                value={userDetails.email}
-                disabled={true}
-                customStyle={{ height: "3rem !important" }}
-              />
-              <div
-                style={{
-                  maxWidth: isMobileSm ? "80%" : "25%",
-                  marginTop: "0.5rem",
-                }}
-              >
-                <Button
-                  type="contained"
-                  styles={{ height: "3rem" }}
-                  onClick={() => setChangePasswordModal(!changePasswordModal)}
-                >
-                  Change Password
-                </Button>
-              </div>
-            </Paper>
-          </Grid>
-          <Grid item xl={4} lg={4} md={12} sm={12} xs={12}>
-            <Paper elevation={3} sx={{ padding: "1rem" }}>
-              <h3
-                style={{
-                  margin: "0.5rem 0.5rem 2rem 0.5rem",
-                  fontFamily: "soraSemiBold",
-                  textAlign: "center",
-                }}
-              >
-                FAQ
-              </h3>
-              <Accordion elevation={0}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <h4>Who built this Web App?</h4>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <div style={{ letterSpacing: "1px" }}>
-                    My name is Dhrunit Prajapati, I am a MERN Stack developer
-                    and an IT professional with one year of working experience
-                  </div>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion elevation={0}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <h4>What technology this app use?</h4>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <div style={{ letterSpacing: "1px" }}>
-                    This application is based on the MERN stack and for UI
-                    designing I have used Figma. more on the{" "}
-                    <a
-                      href="https://github.com/Dhrunit/Expense-Tracker"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Github
-                    </a>{" "}
-                    repo
-                  </div>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion elevation={0}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <h4>Can I use it in my phone?</h4>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <div style={{ letterSpacing: "1px" }}>
-                    Yes you can absolutely and you can also install this app on
-                    your phone as this app is a PWA(Progressive web app). You
-                    can do so by tapping on the three dot of settings on your
-                    browser and you would see a install option
-                  </div>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion elevation={0}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <h4>What is the future of this app?</h4>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <div style={{ letterSpacing: "1px" }}>
-                    Well the plan is to make this project an open source project
-                    or a project on which one can learn and understand the MERN
-                    stack and how to structure MERN projects
-                  </div>
-                </AccordionDetails>
-              </Accordion>
-            </Paper>
-          </Grid>
+                Change Password
+              </Button>
+            </div>
+          </Paper>
         </Grid>
-        <DialogBox
-          onClose={closeDialog}
-          open={changePasswordModal}
-          title={"Change Password"}
-          content={
-            <ChangePasswordModalContent
-              password={password}
-              error={error}
-              setPassword={setPassword}
-              confirmPasswordVisible={confirmPasswordVisible}
-              setconfirmPasswordVisible={setConfirmPasswordVisible}
-              confirmPassword={confirmPassword}
-              setConfirmPassword={setConfirmPassword}
-              passwordVisible={passwordVisible}
-              setPasswordVisible={setPasswordVisible}
-            />
-          }
-          dialogActionContent={
-            <ChangePasswordDialogActions
-              loading={loading}
-              onClick={changePassword}
-            />
-          }
-        />
-      </div>
+        <Grid item xl={4} lg={4} md={12} sm={12} xs={12}>
+          <Paper elevation={3} sx={{ padding: "1rem" }}>
+            <h3
+              style={{
+                margin: "0.5rem 0.5rem 2rem 0.5rem",
+                fontFamily: "soraSemiBold",
+                textAlign: "center",
+              }}
+            >
+              FAQ
+            </h3>
+            <Accordion elevation={0}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <h4>Who built this Web App?</h4>
+              </AccordionSummary>
+              <AccordionDetails>
+                <div style={{ letterSpacing: "1px" }}>
+                  My name is Dhrunit Prajapati, I am a MERN Stack developer and
+                  an IT professional with one year of working experience
+                </div>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion elevation={0}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <h4>What technology this app use?</h4>
+              </AccordionSummary>
+              <AccordionDetails>
+                <div style={{ letterSpacing: "1px" }}>
+                  This application is based on the MERN stack and for UI
+                  designing I have used Figma. more on the{" "}
+                  <a
+                    href="https://github.com/Dhrunit/Expense-Tracker"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Github
+                  </a>{" "}
+                  repo
+                </div>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion elevation={0}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <h4>Can I use it in my phone?</h4>
+              </AccordionSummary>
+              <AccordionDetails>
+                <div style={{ letterSpacing: "1px" }}>
+                  Yes you can absolutely and you can also install this app on
+                  your phone as this app is a PWA(Progressive web app). You can
+                  do so by tapping on the three dot of settings on your browser
+                  and you would see a install option
+                </div>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion elevation={0}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <h4>What is the future of this app?</h4>
+              </AccordionSummary>
+              <AccordionDetails>
+                <div style={{ letterSpacing: "1px" }}>
+                  Well the plan is to make this project an open source project
+                  or a project on which one can learn and understand the MERN
+                  stack and how to structure MERN projects
+                </div>
+              </AccordionDetails>
+            </Accordion>
+          </Paper>
+        </Grid>
+      </Grid>
+      <DialogBox
+        onClose={closeDialog}
+        open={changePasswordModal}
+        title={"Change Password"}
+        content={
+          <ChangePasswordModalContent
+            password={password}
+            error={error}
+            setPassword={setPassword}
+            confirmPasswordVisible={confirmPasswordVisible}
+            setconfirmPasswordVisible={setConfirmPasswordVisible}
+            confirmPassword={confirmPassword}
+            setConfirmPassword={setConfirmPassword}
+            passwordVisible={passwordVisible}
+            setPasswordVisible={setPasswordVisible}
+          />
+        }
+        dialogActionContent={
+          <ChangePasswordDialogActions
+            loading={loading}
+            onClick={changePassword}
+          />
+        }
+      />
     </MainContent>
   );
 };

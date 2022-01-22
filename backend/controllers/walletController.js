@@ -204,7 +204,7 @@ const getWalletById = async (req, res, next) => {
 // @access  Private
 const getWalletsForUser = async (req, res, next) => {
   try {
-    let limit = 10;
+    let limit = 6;
     const { _id: userId } = req.user;
     let { page, searchString } = req.query;
     if (!page || !page.trim()) {
@@ -212,21 +212,35 @@ const getWalletsForUser = async (req, res, next) => {
     }
     if (searchString.trim()) {
       let toSkip = parseInt(page - 1) * limit;
+
+      const walletCount = await Wallet.find({
+        user: userId,
+        name: { $regex: searchString, $options: "i" },
+      }).count();
+
+      let lastPage =
+        Math.ceil(walletCount / parseInt(limit)) === 0
+          ? 1
+          : Math.ceil(walletCount / parseInt(limit));
+
       const wallets = await Wallet.find({
         user: userId,
         name: { $regex: searchString, $options: "i" },
       })
         .skip(toSkip)
         .limit(limit)
-        .select("name");
-      if (!wallets) {
+        .select(["name", "isActiveWallet", "resetPeriod"]);
+
+      if (!wallets || !walletCount) {
         return next(
           new HttpError("An error occured while fetching wallets", 400)
         );
       }
+
       res.status(201).send({
         success: true,
         data: wallets,
+        lastPage,
         message: "Wallet fetched successfully",
       });
     } else {
@@ -234,8 +248,18 @@ const getWalletsForUser = async (req, res, next) => {
       const wallets = await Wallet.find({ user: userId })
         .skip(toSkip)
         .limit(limit)
-        .select("name");
-      if (!wallets) {
+        .select(["name", "isActiveWallet", "resetPeriod"]);
+
+      const walletCount = await Wallet.find({
+        user: userId,
+      }).count();
+      console.log(walletCount);
+      let lastPage =
+        Math.ceil(walletCount / parseInt(limit)) === 0
+          ? 1
+          : Math.ceil(walletCount / parseInt(limit));
+
+      if (!wallets || !walletCount) {
         return next(
           new HttpError("An error occured while fetching wallets", 400)
         );
@@ -243,6 +267,7 @@ const getWalletsForUser = async (req, res, next) => {
       res.status(201).send({
         success: true,
         data: wallets,
+        lastPage,
         message: "Wallet fetched successfully",
       });
     }
