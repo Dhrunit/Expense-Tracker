@@ -75,7 +75,7 @@ const WalletModalContent = ({
       <Grid container spacing={4}>
         <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
           <Form
-            type={"text"}
+            type={"number"}
             name="initialBalance"
             label={"Initial Balance"}
             placeHolder={"Enter Balance"}
@@ -120,7 +120,7 @@ const WalletModalContent = ({
         <Grid container spacing={1}>
           <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
             <Form
-              type={"text"}
+              type={"number"}
               name="budgetAmount"
               label={"Budget Amount"}
               placeHolder={"Enter budget amount"}

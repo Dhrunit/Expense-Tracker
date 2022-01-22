@@ -17,7 +17,6 @@ router.post(
   body("balance").notEmpty().isInt(),
   body("hasBudget").notEmpty().isBoolean(),
   body("resetBalance").notEmpty().isBoolean(),
-  body("resetPeriod").notEmpty(),
   body("isActiveWallet").notEmpty().isBoolean(),
   protect,
   addWallet

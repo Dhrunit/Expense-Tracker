@@ -6,6 +6,7 @@ import {
   SET_WALLET_DIALOG_LOADER,
   SET_WALLET_LOADER,
   SET_COUNT_SUCCESS,
+  REMOVE_WALLET_DIALOG_LOADER,
 } from "../constants/walletConstants";
 
 const dashboardReducer = (
@@ -24,6 +25,11 @@ const dashboardReducer = (
       return {
         ...state,
         dialogLoader: true,
+      };
+    case REMOVE_WALLET_DIALOG_LOADER:
+      return {
+        ...state,
+        dialogLoader: false,
       };
     case SET_WALLET_LOADER:
       return {

@@ -7,7 +7,7 @@ import Button from "../../components/Button";
 import WalletCard from "../../components/WalletCard";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import CalculateIcon from "@mui/icons-material/Calculate";
-import { getWalletDetails } from "../../redux/actions/walletActions";
+import { addWallet, getWalletDetails } from "../../redux/actions/walletActions";
 import Pagination from "@mui/material/Pagination";
 import DialogBox from "../../components/DialogBox";
 import { WalletDialogActions, WalletModalContent } from "./helper";
@@ -33,7 +33,6 @@ const Wallet = ({ collapsed, isMobile }) => {
     selectedWalletDetails,
     paginationCount,
   } = useSelector((state) => state.wallet);
-  const { userDetails } = useSelector((state) => state.auth);
   useEffect(() => {
     dispatch(getWalletDetails(page));
   }, [dispatch, page]);
@@ -43,8 +42,8 @@ const Wallet = ({ collapsed, isMobile }) => {
   const closeDialog = () => {
     setDialogOpen(false);
   };
-  const addWallet = () => {
-    let postbody = { user: userDetails._id };
+  const postWallet = () => {
+    let postbody = {};
     if (!walletName.trim() || walletName.length < 7) {
       setError((prevState) => [...prevState, "walletName"]);
     } else {
@@ -54,18 +53,18 @@ const Wallet = ({ collapsed, isMobile }) => {
     if (!initialBalance.trim()) {
       setError((prevState) => [...prevState, "initialBalance"]);
     } else {
-      postbody.balance = initialBalance;
+      postbody.balance = parseInt(initialBalance);
       setError(error.filter((err) => err !== "initialBalance"));
     }
     if (addBudget) {
       if (!budgetAmount.trim()) {
         setError((prevState) => [...prevState, "budgetAmount"]);
       } else {
-        postbody.budgetAmount = budgetAmount;
+        postbody.budgetAmount = parseInt(budgetAmount);
         setError(error.filter((err) => err !== "budgetAmount"));
       }
     } else {
-      postbody.budgetAmount = budgetAmount;
+      postbody.budgetAmount = 0;
       setError(error.filter((err) => err !== "budgetAmount"));
     }
 
@@ -82,8 +81,9 @@ const Wallet = ({ collapsed, isMobile }) => {
         postbody.resetPeriod = resetPeriod;
       } else {
         postbody.resetBalance = false;
+        postbody.resetPeriod = "";
       }
-      console.log(postbody);
+      dispatch(addWallet(postbody));
     }
   };
   return (
@@ -217,7 +217,7 @@ const Wallet = ({ collapsed, isMobile }) => {
           <WalletDialogActions
             type="addWallet"
             loading={dialogLoader}
-            onClick={addWallet}
+            onClick={postWallet}
           />
         }
       />

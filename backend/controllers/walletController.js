@@ -27,7 +27,7 @@ const addWallet = async (req, res, next) => {
       isActiveWallet,
     } = req.body;
 
-    //   Calculate reset time
+    // Calculate reset time
     let resetTime;
     if (resetBalance) {
       if (resetPeriod.toLowerCase() === "monthly") {
@@ -61,6 +61,21 @@ const addWallet = async (req, res, next) => {
 
     // update the user Model with wallet id
     if (isActiveWallet) {
+      let previousActiveWallet = await Wallet.find({
+        user: req.user._id,
+        isActiveWallet: true,
+        _id: { $nin: wallet._id },
+      });
+      if (!previousActiveWallet) {
+        return next(new HttpError("Linking the wallet with user failed", 400));
+      }
+      let updatePreviousWallet = await Wallet.findByIdAndUpdate(
+        previousActiveWallet[0]._id,
+        { isActiveWallet: false }
+      );
+      if (!updatePreviousWallet) {
+        return next(new HttpError("Linking the wallet with user failed", 400));
+      }
       let userLinked = await User.findByIdAndUpdate(req.user._id, {
         activeWallet: wallet._id,
       });

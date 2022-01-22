@@ -6,6 +6,7 @@ let url = {
   register: baseUrl + "api/users/register",
   getDashboardDetails: baseUrl + "api/dashboard/getDashboardDetails/",
   getWalletDetails: baseUrl + "api/wallet/getWallets",
+  addWallet: baseUrl + "api/wallet/addWallet",
 };
 
 export default url;
