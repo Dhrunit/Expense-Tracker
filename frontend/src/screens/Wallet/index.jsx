@@ -7,7 +7,11 @@ import Button from "../../components/Button";
 import WalletCard from "../../components/WalletCard";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import CalculateIcon from "@mui/icons-material/Calculate";
-import { addWallet, getWalletDetails } from "../../redux/actions/walletActions";
+import {
+  addWallet,
+  deleteWallet,
+  getWalletDetails,
+} from "../../redux/actions/walletActions";
 import Pagination from "@mui/material/Pagination";
 import DialogBox from "../../components/DialogBox";
 import { WalletDialogActions, WalletModalContent } from "./helper";
@@ -24,6 +28,7 @@ const Wallet = ({ collapsed, isMobile }) => {
   const [resetPeriod, setResetPeriod] = useState("Weekly");
   const [error, setError] = useState([]);
 
+  const [individualLoader, setIndividualLoader] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const dispatch = useDispatch();
   const {
@@ -42,6 +47,11 @@ const Wallet = ({ collapsed, isMobile }) => {
   const closeDialog = () => {
     setDialogOpen(false);
   };
+
+  const postDeleteWallet = (id) => {
+    dispatch(deleteWallet(id, setIndividualLoader, page));
+  };
+
   const postWallet = () => {
     let postbody = {};
     if (!walletName.trim() || walletName.length < 7) {
@@ -133,6 +143,8 @@ const Wallet = ({ collapsed, isMobile }) => {
                     walletDetails.map((wallet) => (
                       <Grid item xl={4} lg={4} md={6} sm={6} xs={12}>
                         <WalletCard
+                          id={wallet._id}
+                          onDelete={(id) => postDeleteWallet(id)}
                           walletName={wallet.name}
                           description={
                             wallet.isActiveWallet

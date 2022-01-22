@@ -38,7 +38,21 @@ export default class RestApi {
     }
   };
 
-  delete() {}
+  delete = async (url, isAuth = false, appendString = false) => {
+    try {
+      if (appendString) {
+        url += appendString;
+      }
+      if (isAuth) {
+        let result = await axios.delete(url, this.config);
+        return result;
+      }
+      let result = await axios.delete(url);
+      return result;
+    } catch (error) {
+      return error.response;
+    }
+  };
 
   put() {}
 }

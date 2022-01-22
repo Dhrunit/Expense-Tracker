@@ -55,3 +55,16 @@ export const addWallet = (body) => async (dispatch) => {
     });
   }
 };
+
+export const deleteWallet = (id, setLoader, page) => async (dispatch) => {
+  setLoader(true);
+  let result = await new RestApi().delete(url.deleteWallet, true, `/${id}`);
+  if (result.status === 201) {
+    dispatch(setAlert(result.data.message, "success"));
+    dispatch(getWalletDetails(page));
+    setLoader(false);
+  } else {
+    dispatch(setAlert(result.data.message, "error"));
+    setLoader(false);
+  }
+};

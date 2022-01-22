@@ -7,6 +7,7 @@ let url = {
   getDashboardDetails: baseUrl + "api/dashboard/getDashboardDetails/",
   getWalletDetails: baseUrl + "api/wallet/getWallets",
   addWallet: baseUrl + "api/wallet/addWallet",
+  deleteWallet: baseUrl + "api/wallet/deleteWallet",
 };
 
 export default url;

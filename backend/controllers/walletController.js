@@ -181,7 +181,18 @@ const deleteWallet = async (req, res, next) => {
       );
     }
     const { walletId } = req.params;
-
+    let walletDetails = await Wallet.findById(walletId);
+    if (!walletDetails) {
+      return next(new HttpError("Wrong wallet id", 400));
+    }
+    if (walletDetails.isActiveWallet) {
+      return next(
+        new HttpError(
+          "The wallet you are about to delete is an active wallet please select a wallet and make it active in order to delete this wallet",
+          400
+        )
+      );
+    }
     // delete the wallet
     const transaction = await Transaction.deleteMany({ wallet: walletId });
     if (!transaction) {
@@ -196,6 +207,7 @@ const deleteWallet = async (req, res, next) => {
       message: "Wallet deleted successfully",
     });
   } catch (error) {
+    console.log(error);
     return next(new HttpError("Internal Server error", 500));
   }
 };

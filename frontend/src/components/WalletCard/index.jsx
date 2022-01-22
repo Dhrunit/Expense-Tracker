@@ -3,14 +3,17 @@ import { cardEllipse } from "../../assets/images";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { IconButton, Menu, MenuItem, Stack } from "@mui/material";
 import { CreditCardSvg } from "../../assets/icons";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const WalletCard = ({
+  id,
   walletName,
   onView,
   onDelete,
   onEdit,
   description,
   resetPeriod,
+  individualLoader,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
@@ -64,7 +67,9 @@ const WalletCard = ({
       >
         <MenuItem>Edit</MenuItem>
         <MenuItem>View</MenuItem>
-        <MenuItem>Delete</MenuItem>
+        <MenuItem onClick={() => onDelete(id)}>
+          {individualLoader ? <CircularProgress /> : "Delete"}
+        </MenuItem>
       </Menu>
     </div>
   );
