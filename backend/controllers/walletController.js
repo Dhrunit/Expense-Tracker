@@ -69,12 +69,16 @@ const addWallet = async (req, res, next) => {
       if (!previousActiveWallet) {
         return next(new HttpError("Linking the wallet with user failed", 400));
       }
-      let updatePreviousWallet = await Wallet.findByIdAndUpdate(
-        previousActiveWallet[0]._id,
-        { isActiveWallet: false }
-      );
-      if (!updatePreviousWallet) {
-        return next(new HttpError("Linking the wallet with user failed", 400));
+      if (previousActiveWallet.length > 0) {
+        let updatePreviousWallet = await Wallet.findByIdAndUpdate(
+          previousActiveWallet[0]._id,
+          { isActiveWallet: false }
+        );
+        if (!updatePreviousWallet) {
+          return next(
+            new HttpError("Linking the wallet with user failed", 400)
+          );
+        }
       }
       let userLinked = await User.findByIdAndUpdate(req.user._id, {
         activeWallet: wallet._id,
@@ -264,7 +268,7 @@ const getWalletsForUser = async (req, res, next) => {
         .limit(limit)
         .select(["name", "isActiveWallet", "resetPeriod"]);
 
-      if (!wallets || !walletCount) {
+      if (!wallets || (!walletCount && walletCount !== 0)) {
         return next(
           new HttpError("An error occured while fetching wallets", 400)
         );
@@ -286,13 +290,12 @@ const getWalletsForUser = async (req, res, next) => {
       const walletCount = await Wallet.find({
         user: userId,
       }).count();
-      console.log(walletCount);
       let lastPage =
         Math.ceil(walletCount / parseInt(limit)) === 0
           ? 1
           : Math.ceil(walletCount / parseInt(limit));
 
-      if (!wallets || !walletCount) {
+      if (!wallets || (!walletCount && walletCount !== 0)) {
         return next(
           new HttpError("An error occured while fetching wallets", 400)
         );

@@ -8,7 +8,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 const WalletCard = ({
   id,
   walletName,
-  onView,
   onDelete,
   onEdit,
   description,
@@ -49,12 +48,12 @@ const WalletCard = ({
       <img src={CreditCardSvg} alt="wallet-icon" style={{ margin: "1rem" }} />
       <Stack style={{ padding: "0 1.5rem" }} spacing={1}>
         <h2>{walletName}</h2>
-        <p style={{ color: description === "Is active" ? "green" : "red" }}>
+        <p style={{ color: description === "Active" ? "green" : "red" }}>
           {description}
         </p>
         <p>
           <span style={{ fontFamily: "soraBold" }}>Reset period:</span>{" "}
-          {resetPeriod}
+          {resetPeriod ? resetPeriod : "No reset period set"}
         </p>
       </Stack>
       <Menu
@@ -65,10 +64,11 @@ const WalletCard = ({
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem>Edit</MenuItem>
-        <MenuItem>View</MenuItem>
-        <MenuItem onClick={() => onDelete(id)}>
-          {individualLoader ? <CircularProgress /> : "Delete"}
+        <MenuItem onClick={() => !individualLoader && onEdit(id)}>
+          {individualLoader ? <CircularProgress color="primary" /> : "Edit"}
+        </MenuItem>
+        <MenuItem onClick={() => !individualLoader && onDelete(id)}>
+          {individualLoader ? <CircularProgress color="primary" /> : "Delete"}
         </MenuItem>
       </Menu>
     </div>

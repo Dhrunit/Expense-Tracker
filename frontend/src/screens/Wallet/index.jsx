@@ -11,6 +11,7 @@ import {
   addWallet,
   deleteWallet,
   getWalletDetails,
+  getIndividualWallet,
 } from "../../redux/actions/walletActions";
 import Pagination from "@mui/material/Pagination";
 import DialogBox from "../../components/DialogBox";
@@ -30,6 +31,7 @@ const Wallet = ({ collapsed, isMobile }) => {
 
   const [individualLoader, setIndividualLoader] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [isEditMode, setEditMode] = useState(false);
   const dispatch = useDispatch();
   const {
     walletDetails,
@@ -48,38 +50,73 @@ const Wallet = ({ collapsed, isMobile }) => {
     setDialogOpen(false);
   };
 
+  const getIndividualWalletDetails = (id) => {
+    dispatch(
+      getIndividualWallet(id, setIndividualLoader, setEditMode, setDialogOpen)
+    );
+  };
+
   const postDeleteWallet = (id) => {
     dispatch(deleteWallet(id, setIndividualLoader, page));
   };
 
-  const postWallet = () => {
-    let postbody = {};
+  const closeDialogAndEmptyData = () => {
+    setWalletName("");
+    setCurrency("INR ₹");
+    setisActiveWallet(false);
+    setAddBudget(false);
+    setInitialBalance("");
+    setBudgetAmount("");
+    setResetBalance(false);
+    setError([]);
+    setDialogOpen(false);
+    setEditMode(false);
+  };
+
+  const validateForm = () => {
+    let error = [];
     if (!walletName.trim() || walletName.length < 7) {
-      setError((prevState) => [...prevState, "walletName"]);
+      error = [...error, "walletName"];
     } else {
-      postbody.name = walletName;
-      setError(error.filter((err) => err !== "walletName"));
+      error = error.filter((err) => err !== "walletName");
     }
     if (!initialBalance.trim()) {
-      setError((prevState) => [...prevState, "initialBalance"]);
+      error = [...error, "initialBalance"];
     } else {
-      postbody.balance = parseInt(initialBalance);
-      setError(error.filter((err) => err !== "initialBalance"));
+      error = error.filter((err) => err !== "initialBalance");
     }
     if (addBudget) {
       if (!budgetAmount.trim()) {
-        setError((prevState) => [...prevState, "budgetAmount"]);
+        error = [...error, "budgetAmount"];
       } else {
+        error = error.filter((err) => err !== "budgetAmount");
+      }
+    } else {
+      error = error.filter((err) => err !== "budgetAmount");
+    }
+    setError(error);
+    return error;
+  };
+
+  const postWallet = () => {
+    let error = validateForm();
+    let postbody = {};
+    if (walletName.trim() && walletName.length > 6) {
+      postbody.name = walletName;
+    }
+    if (initialBalance.trim()) {
+      postbody.balance = parseInt(initialBalance);
+    }
+    if (addBudget) {
+      if (budgetAmount.trim()) {
         postbody.budgetAmount = parseInt(budgetAmount);
-        setError(error.filter((err) => err !== "budgetAmount"));
       }
     } else {
       postbody.budgetAmount = 0;
-      setError(error.filter((err) => err !== "budgetAmount"));
     }
 
     if (error.length === 0) {
-      postbody.currency = currency.split(" ")[1];
+      postbody.currency = currency;
       postbody.isActiveWallet = isActiveWallet;
       if (addBudget) {
         postbody.hasBudget = true;
@@ -93,9 +130,54 @@ const Wallet = ({ collapsed, isMobile }) => {
         postbody.resetBalance = false;
         postbody.resetPeriod = "";
       }
-      dispatch(addWallet(postbody));
+      dispatch(addWallet(postbody, closeDialogAndEmptyData, page));
     }
   };
+
+  // const postWallet = () => {
+  //   let postbody = {};
+  //   if (!walletName.trim() || walletName.length < 7) {
+  //     setError((prevState) => [...prevState, "walletName"]);
+  //   } else {
+  //     postbody.name = walletName;
+  //     setError(error.filter((err) => err !== "walletName"));
+  //   }
+  //   if (!initialBalance.trim()) {
+  //     setError((prevState) => [...prevState, "initialBalance"]);
+  //   } else {
+  //     postbody.balance = parseInt(initialBalance);
+  //     setError(error.filter((err) => err !== "initialBalance"));
+  //   }
+  //   if (addBudget) {
+  //     if (!budgetAmount.trim()) {
+  //       setError((prevState) => [...prevState, "budgetAmount"]);
+  //     } else {
+  //       postbody.budgetAmount = parseInt(budgetAmount);
+  //       setError(error.filter((err) => err !== "budgetAmount"));
+  //     }
+  //   } else {
+  //     postbody.budgetAmount = 0;
+  //     setError(error.filter((err) => err !== "budgetAmount"));
+  //   }
+
+  //   if (error.length === 0) {
+  //     postbody.currency = currency;
+  //     postbody.isActiveWallet = isActiveWallet;
+  //     if (addBudget) {
+  //       postbody.hasBudget = true;
+  //     } else {
+  //       postbody.hasBudget = false;
+  //     }
+  //     if (resetBalance) {
+  //       postbody.resetBalance = true;
+  //       postbody.resetPeriod = resetPeriod;
+  //     } else {
+  //       postbody.resetBalance = false;
+  //       postbody.resetPeriod = "";
+  //     }
+  //     dispatch(addWallet(postbody, closeDialogAndEmptyData, page));
+  //   }
+  // };
   return (
     <MainContent isMobile={isMobile} collapsed={collapsed}>
       {loading && (
@@ -145,13 +227,13 @@ const Wallet = ({ collapsed, isMobile }) => {
                         <WalletCard
                           id={wallet._id}
                           onDelete={(id) => postDeleteWallet(id)}
+                          onEdit={(id) => getIndividualWalletDetails(id)}
                           walletName={wallet.name}
                           description={
-                            wallet.isActiveWallet
-                              ? "Is active"
-                              : "Is not active"
+                            wallet.isActiveWallet ? "Active" : "Not active"
                           }
                           resetPeriod={wallet.resetPeriod}
+                          individualLoader={individualLoader}
                         />
                       </Grid>
                     ))}
@@ -206,28 +288,36 @@ const Wallet = ({ collapsed, isMobile }) => {
         title={"Add wallet"}
         content={
           <WalletModalContent
-            walletName={walletName}
+            walletName={isEditMode ? selectedWalletDetails.name : walletName}
             setWalletName={setWalletName}
-            currency={currency}
+            currency={isEditMode ? selectedWalletDetails.name : currency}
             setCurrency={setCurrency}
-            isActiveWallet={isActiveWallet}
+            isActiveWallet={
+              isEditMode ? selectedWalletDetails.name : isActiveWallet
+            }
             setisActiveWallet={setisActiveWallet}
-            addBudget={addBudget}
+            addBudget={isEditMode ? selectedWalletDetails.name : addBudget}
             setAddBudget={setAddBudget}
-            initialBalance={initialBalance}
+            initialBalance={
+              isEditMode ? selectedWalletDetails.name : initialBalance
+            }
             setInitialBalance={setInitialBalance}
-            budgetAmount={budgetAmount}
+            budgetAmount={
+              isEditMode ? selectedWalletDetails.name : budgetAmount
+            }
             setBudgetAmount={setBudgetAmount}
-            resetBalance={resetBalance}
+            resetBalance={
+              isEditMode ? selectedWalletDetails.name : resetBalance
+            }
             setResetBalance={setResetBalance}
-            resetPeriod={resetPeriod}
+            resetPeriod={isEditMode ? selectedWalletDetails.name : resetPeriod}
             setResetPeriod={setResetPeriod}
             error={error}
           />
         }
         dialogActionContent={
           <WalletDialogActions
-            type="addWallet"
+            type={isEditMode ? "updateWallet" : "addWallet"}
             loading={dialogLoader}
             onClick={postWallet}
           />

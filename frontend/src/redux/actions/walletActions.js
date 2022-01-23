@@ -38,27 +38,30 @@ export const getWalletDetails = (page) => async (dispatch) => {
   }
 };
 
-export const addWallet = (body) => async (dispatch) => {
-  dispatch({
-    type: SET_WALLET_DIALOG_LOADER,
-  });
-  let result = await new RestApi().post(url.addWallet, body, true);
-  if (result.status === 201) {
-    dispatch(setAlert(result.data.message, "success"));
+export const addWallet =
+  (body, closeDialogAndEmptyData, page) => async (dispatch) => {
     dispatch({
-      type: REMOVE_WALLET_DIALOG_LOADER,
+      type: SET_WALLET_DIALOG_LOADER,
     });
-  } else {
-    dispatch(setAlert(result.data.message, "error"));
-    dispatch({
-      type: REMOVE_WALLET_DIALOG_LOADER,
-    });
-  }
-};
+    let result = await new RestApi().post(url.addWallet, body, true);
+    if (result.status === 201) {
+      dispatch(setAlert(result.data.message, "success"));
+      dispatch({
+        type: REMOVE_WALLET_DIALOG_LOADER,
+      });
+      dispatch(getWalletDetails(page));
+      closeDialogAndEmptyData();
+    } else {
+      dispatch(setAlert(result.data.message, "error"));
+      dispatch({
+        type: REMOVE_WALLET_DIALOG_LOADER,
+      });
+    }
+  };
 
 export const deleteWallet = (id, setLoader, page) => async (dispatch) => {
   setLoader(true);
-  let result = await new RestApi().delete(url.deleteWallet, true, `/${id}`);
+  let result = await new RestApi().delete(url.deleteWallet, true, id);
   if (result.status === 201) {
     dispatch(setAlert(result.data.message, "success"));
     dispatch(getWalletDetails(page));
@@ -68,3 +71,26 @@ export const deleteWallet = (id, setLoader, page) => async (dispatch) => {
     setLoader(false);
   }
 };
+
+export const getIndividualWallet =
+  (id, setLoader, setEditMode, setDialogOpen) => async (dispatch) => {
+    setLoader(true);
+    let result = await new RestApi().get(url.getIndividualWallet, true, id);
+    if (result.status === 200) {
+      dispatch({
+        type: SET_WALLETDETAILS_SUCCESS,
+        payload: result.data.data,
+      });
+      setLoader(false);
+      setEditMode(true);
+      setDialogOpen(true);
+    } else {
+      dispatch({
+        type: SET_WALLETDETAILS_FAIL,
+      });
+      setEditMode(false);
+      setDialogOpen(false);
+      dispatch(setAlert(result.data.message, "error"));
+      setLoader(false);
+    }
+  };

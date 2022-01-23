@@ -66,7 +66,7 @@ const dashboardReducer = (
       };
     case SET_WALLETDETAILS_FAIL:
       return {
-        ...state,
+        walletDetails: state.walletDetails,
         selectedWalletDetails: {},
         loading: false,
         dialogLoader: false,
