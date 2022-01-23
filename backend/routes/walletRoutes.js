@@ -16,9 +16,7 @@ router.post(
   body("currency").notEmpty(),
   body("balance").notEmpty().isInt(),
   body("hasBudget").notEmpty().isBoolean(),
-  body("budgetAmount").notEmpty().isInt(),
   body("resetBalance").notEmpty().isBoolean(),
-  body("resetPeriod").notEmpty(),
   body("isActiveWallet").notEmpty().isBoolean(),
   protect,
   addWallet
@@ -29,11 +27,8 @@ router.put(
   body("walletId").isMongoId(),
   body("name").isLength({ min: 6 }),
   body("currency").notEmpty(),
-  body("balance").notEmpty().isInt(),
   body("hasBudget").notEmpty().isBoolean(),
   body("budgetAmount").notEmpty().isInt(),
-  body("resetBalance").notEmpty().isBoolean(),
-  body("resetPeriod").notEmpty(),
   body("isActiveWallet").notEmpty().isBoolean(),
   protect,
   editWallet

@@ -5,6 +5,11 @@ let url = {
   changePassword: baseUrl + "api/users/changePassword",
   register: baseUrl + "api/users/register",
   getDashboardDetails: baseUrl + "api/dashboard/getDashboardDetails/",
+  getWalletDetails: baseUrl + "api/wallet/getWallets",
+  addWallet: baseUrl + "api/wallet/addWallet",
+  deleteWallet: baseUrl + "api/wallet/deleteWallet/",
+  editWallet: baseUrl + "api/wallet/editWallet",
+  getIndividualWallet: baseUrl + "api/wallet/getWallet/",
 };
 
 export default url;

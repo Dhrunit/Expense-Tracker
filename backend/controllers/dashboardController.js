@@ -18,7 +18,7 @@ const getDashboardDetails = async (req, res, next) => {
       percentageExpense: 0,
       balance: { remaining: 0, underBudget: null },
       chartData: {
-        januray: { income: 0, expense: 0 },
+        january: { income: 0, expense: 0 },
         february: { income: 0, expense: 0 },
         march: { income: 0, expense: 0 },
         april: { income: 0, expense: 0 },
@@ -32,6 +32,7 @@ const getDashboardDetails = async (req, res, next) => {
         december: { income: 0, expense: 0 },
       },
     };
+    let date = new Date().getFullYear().toString();
     let walletDetails = await Wallet.findById(userWalletId).populate(
       "transactions"
     );
@@ -45,8 +46,11 @@ const getDashboardDetails = async (req, res, next) => {
     if (walletDetails.hasBudget) {
       dataToSend.balance.underBudget =
         walletDetails.balance > walletDetails.budgetAmount;
+    } else {
+      dataToSend.balance.underBudget = null;
     }
     for (const transaction of walletDetails.transactions) {
+      console.log();
       if (
         transaction.type === "income" &&
         transaction.month === month.toLowerCase()
@@ -58,7 +62,6 @@ const getDashboardDetails = async (req, res, next) => {
       ) {
         dataToSend.expense += transaction.amount;
       }
-
       if (dataToSend.chartData[transaction.month]) {
         if (transaction.type === "income") {
           dataToSend.chartData[transaction.month].income += transaction.amount;
@@ -68,17 +71,21 @@ const getDashboardDetails = async (req, res, next) => {
       }
       if (
         transaction.type === "income" &&
-        previousMonth === month.toLowerCase()
+        previousMonth === month.toLowerCase() &&
+        transaction.date.split("/")[2] === date
       ) {
         totalIncomeInPreviusMonth += transaction.amount;
       } else if (
         transaction.type === "expense" &&
-        previousMonth === month.toLowerCase()
+        previousMonth === month.toLowerCase() &&
+        transaction.date.split("/")[2] === date
       ) {
         totalExpenseInPreviusMonth += transaction.amount;
       }
       if (dataToSend.income === totalIncomeInPreviusMonth) {
         dataToSend.percentageIncome = 0;
+      } else if (totalIncomeInPreviusMonth === 0) {
+        dataToSend.percentageIncome = null;
       } else {
         dataToSend.percentageIncome =
           ((dataToSend.income - totalIncomeInPreviusMonth) /
@@ -87,6 +94,8 @@ const getDashboardDetails = async (req, res, next) => {
       }
       if (dataToSend.expense === totalExpenseInPreviusMonth) {
         dataToSend.percentageExpense = 0;
+      } else if (totalExpenseInPreviusMonth === 0) {
+        dataToSend.percentageExpense = null;
       } else {
         dataToSend.percentageExpense =
           ((dataToSend.income - totalExpenseInPreviusMonth) /
@@ -100,6 +109,7 @@ const getDashboardDetails = async (req, res, next) => {
       message: "Dashboard details fetched successfully",
     });
   } catch (error) {
+    console.log(error);
     return next(new HttpError("Internal Server error", 500));
   }
 };

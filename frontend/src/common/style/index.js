@@ -34,10 +34,10 @@ export const MainContent = ({ collapsed, children, isMobile }) => {
         style={{
           paddingLeft: 0,
           transition: "all 0.3s",
-          margin: "2.5rem 2rem",
+          margin: "2.5rem 0.5rem",
         }}
       >
-        {children}
+        <div style={{ padding: "1rem" }}>{children}</div>
       </div>
     );
   } else {
@@ -49,7 +49,7 @@ export const MainContent = ({ collapsed, children, isMobile }) => {
           transition: "all 0.3s",
         }}
       >
-        {children}
+        <div style={{ padding: "1rem" }}>{children}</div>
       </div>
     );
   }

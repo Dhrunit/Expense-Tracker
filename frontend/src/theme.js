@@ -18,6 +18,12 @@ const theme = createTheme({
           height: "25px",
           marginTop: "0.5rem",
         },
+        colorPrimary: {
+          color: "#744FC2",
+          width: "20px !important",
+          height: "20px !important",
+          margin: "0 auto",
+        },
       },
     },
     MuiAppBar: {

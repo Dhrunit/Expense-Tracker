@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { HashLoader } from "react-spinners";
 import { MainContent } from "../../common/style";
@@ -7,11 +7,17 @@ import EmptyContent from "../../components/EmptyContent";
 import { getDashboardDetails } from "../../redux/actions/dashboardActions";
 import DashboardCard from "../../components/DashboardCard";
 import DashboardGraph from "../../components/DashboardGraph";
+import SplashScreen from "./helper";
+import { useMediaQuery, useTheme, Backdrop } from "@mui/material";
 
 export default function Dashboard({ collapsed, isMobile }) {
+  const theme = useTheme();
+  const isMobileBackdrop = useMediaQuery(theme.breakpoints.down("lg"));
+
   const dispatch = useDispatch();
   const { loading, isNewUser, dashboardDetails, incomeSeries, expenseSeries } =
     useSelector((state) => state.dashboard);
+  const [openBackdrop, setOpenBackdrop] = useState(isNewUser);
   useEffect(() => {
     dispatch(getDashboardDetails());
   }, [dispatch]);
@@ -51,6 +57,15 @@ export default function Dashboard({ collapsed, isMobile }) {
           </Grid>
         )}
       </div>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={openBackdrop}
+      >
+        <SplashScreen
+          closeBackdrop={setOpenBackdrop}
+          isMobile={isMobileBackdrop}
+        />
+      </Backdrop>
     </MainContent>
   );
 }

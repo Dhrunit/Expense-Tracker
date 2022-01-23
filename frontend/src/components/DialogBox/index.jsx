@@ -8,7 +8,12 @@ import { IconButton } from "@mui/material";
 
 const DialogBox = ({ onClose, open, title, content, dialogActionContent }) => {
   return (
-    <Dialog onClose={onClose} open={open} maxWidth="sm" fullWidth>
+    <Dialog
+      onClose={onClose}
+      open={open}
+      maxWidth={title === "Change Password" ? "sm" : "md"}
+      fullWidth
+    >
       <DialogTitle>
         <div
           style={{
