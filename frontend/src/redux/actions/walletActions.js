@@ -94,3 +94,24 @@ export const getIndividualWallet =
       setLoader(false);
     }
   };
+
+export const editWallet =
+  (body, closeDialogAndEmptyData, page) => async (dispatch) => {
+    dispatch({
+      type: SET_WALLET_DIALOG_LOADER,
+    });
+    let result = await new RestApi().put(url.editWallet, body, true);
+    if (result.status === 201) {
+      dispatch({
+        type: REMOVE_WALLET_DIALOG_LOADER,
+      });
+      dispatch(setAlert(result.data.message, "success"));
+      closeDialogAndEmptyData();
+      dispatch(getWalletDetails(page));
+    } else {
+      dispatch({
+        type: SET_WALLETDETAILS_FAIL,
+      });
+      dispatch(setAlert(result.data.message, "error"));
+    }
+  };

@@ -8,6 +8,7 @@ let url = {
   getWalletDetails: baseUrl + "api/wallet/getWallets",
   addWallet: baseUrl + "api/wallet/addWallet",
   deleteWallet: baseUrl + "api/wallet/deleteWallet/",
+  editWallet: baseUrl + "api/wallet/editWallet",
   getIndividualWallet: baseUrl + "api/wallet/getWallet/",
 };
 

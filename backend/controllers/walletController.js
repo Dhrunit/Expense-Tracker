@@ -113,38 +113,49 @@ const editWallet = async (req, res, next) => {
       walletId,
       name,
       currency,
-      balance,
       hasBudget,
       budgetAmount,
-      resetBalance,
-      resetPeriod,
       isActiveWallet,
     } = req.body;
 
-    //   Calculate reset time
-    let resetTime;
-    if (resetPeriod.toLowerCase() === "monthly") {
-      resetTime = moment().add(1, "months").format();
-    } else if (resetPeriod.toLowerCase() === "weekly") {
-      resetTime = moment().add(1, "weeks").format();
-    } else {
-      resetTime = moment().add(1, "years").format();
+    // update the user Model with wallet id
+    if (isActiveWallet) {
+      let previousActiveWallet = await Wallet.find({
+        user: req.user._id,
+        isActiveWallet: true,
+        _id: { $nin: walletId },
+      });
+      if (!previousActiveWallet) {
+        return next(new HttpError("Linking the wallet with user failed", 400));
+      }
+      if (previousActiveWallet.length > 0) {
+        let updatePreviousWallet = await Wallet.findByIdAndUpdate(
+          previousActiveWallet[0]._id,
+          { isActiveWallet: false }
+        );
+        if (!updatePreviousWallet) {
+          return next(
+            new HttpError("Linking the wallet with user failed", 400)
+          );
+        }
+      }
+      let userLinked = await User.findByIdAndUpdate(req.user._id, {
+        activeWallet: walletId,
+      });
+      if (!userLinked) {
+        return next(new HttpError("Linking the wallet with user failed", 400));
+      }
     }
+
     // update the wallet
     const wallet = await Wallet.findByIdAndUpdate(
       walletId,
       {
-        user: req.user._id,
         name,
         currency,
-        balance,
         hasBudget,
         budgetAmount,
-        resetBalance,
-        resetPeriod,
         isActiveWallet,
-        activeDate: moment().format(),
-        resetTime,
       },
       {
         new: true,
@@ -153,22 +164,13 @@ const editWallet = async (req, res, next) => {
     if (!wallet) {
       return next(new HttpError("Wallet update failed", 400));
     }
-
-    // update the user Model with wallet id
-    if (isActiveWallet) {
-      let userLinked = await User.findByIdAndUpdate(req.user._id, {
-        activeWallet: wallet._id,
-      });
-      if (!userLinked) {
-        return next(new HttpError("Linking the wallet with user failed", 400));
-      }
-    }
     res.status(201).send({
       success: true,
       data: { wallet },
       message: "Wallet Updated successfully",
     });
   } catch (error) {
+    console.log(error);
     return next(new HttpError("Internal Server error", 500));
   }
 };
@@ -264,6 +266,7 @@ const getWalletsForUser = async (req, res, next) => {
         user: userId,
         name: { $regex: searchString, $options: "i" },
       })
+        .sort({ isActiveWallet: -1 })
         .skip(toSkip)
         .limit(limit)
         .select(["name", "isActiveWallet", "resetPeriod"]);
@@ -283,6 +286,7 @@ const getWalletsForUser = async (req, res, next) => {
     } else {
       let toSkip = parseInt(page - 1) * limit;
       const wallets = await Wallet.find({ user: userId })
+        .sort({ isActiveWallet: -1 })
         .skip(toSkip)
         .limit(limit)
         .select(["name", "isActiveWallet", "resetPeriod"]);

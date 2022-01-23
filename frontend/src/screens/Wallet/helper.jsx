@@ -14,6 +14,7 @@ import {
 import currencyData from "../../utils/currencyData";
 
 const WalletModalContent = ({
+  isEditMode,
   walletName,
   setWalletName,
   currency,
@@ -82,6 +83,7 @@ const WalletModalContent = ({
             value={initialBalance}
             error={error.includes("initialBalance")}
             onChange={(evt) => setInitialBalance(evt.target.value)}
+            disabled={isEditMode}
             errorText={
               error.includes("initialBalance") && "Please enter initial balance"
             }
@@ -138,6 +140,7 @@ const WalletModalContent = ({
                 control={
                   <Checkbox
                     checked={resetBalance}
+                    disabled={isEditMode}
                     onChange={(evt) => setResetBalance(!resetBalance)}
                   />
                 }
@@ -152,6 +155,7 @@ const WalletModalContent = ({
                   Reset initial balance period
                 </label>
                 <Select
+                  disabled={isEditMode}
                   value={resetPeriod}
                   variant="outlined"
                   onChange={(evt) => setResetPeriod(evt.target.value)}
@@ -211,7 +215,7 @@ const WalletDialogActions = ({ type, loading, onClick }) => {
           {loading ? (
             <CircularProgress style={{ width: "25px", height: "25px" }} />
           ) : (
-            "Save"
+            "Update"
           )}
         </Button>
       </div>

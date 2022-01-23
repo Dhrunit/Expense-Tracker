@@ -7,6 +7,8 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 const returnSubTitleText = (percentage) => {
   if (percentage > 0) {
     return `${percentage}% More than last month`;
+  } else if (percentage === null) {
+    return `No data for previous month found`;
   } else if (percentage === 0) {
     return `Same as last month`;
   } else {
@@ -17,7 +19,7 @@ const returnSubTitleText = (percentage) => {
 const returnSubtitleIcon = (percentage) => {
   if (percentage > 0) {
     return <ArrowUpwardIcon sx={{ color: "lightgreen" }} />;
-  } else if (percentage === 0) {
+  } else if (percentage === 0 || percentage === null) {
     return "";
   } else {
     return <ArrowDownwardIcon sx={{ color: "red" }} />;
@@ -32,7 +34,11 @@ const DashboardCard = ({ dashboardDetails }) => {
         <Paper elevation={3}>
           <IndividualContent
             title={"Income"}
-            amount={dashboardDetails.currency + " " + dashboardDetails.income}
+            amount={
+              dashboardDetails.currency.split(" ")[1] +
+              " " +
+              dashboardDetails.income
+            }
             subtitle={returnSubTitleText(dashboardDetails.percentageIncome)}
             color={"#744FC2"}
             buttonAction={() => navigate("/transactions")}
@@ -44,7 +50,11 @@ const DashboardCard = ({ dashboardDetails }) => {
         <Paper elevation={3}>
           <IndividualContent
             title={"Expenditure"}
-            amount={dashboardDetails.currency + " " + dashboardDetails.expense}
+            amount={
+              dashboardDetails.currency.split(" ")[1] +
+              " " +
+              dashboardDetails.expense
+            }
             subtitle={returnSubTitleText(dashboardDetails.percentageExpense)}
             color={"#744FC2"}
             buttonAction={() => navigate("/transactions")}
@@ -59,13 +69,15 @@ const DashboardCard = ({ dashboardDetails }) => {
           <IndividualContent
             title={"Remaining"}
             amount={
-              dashboardDetails.currency +
+              dashboardDetails.currency.split(" ")[1] +
               " " +
               dashboardDetails.balance.remaining
             }
             subtitle={
               dashboardDetails.balance.underBudget ? (
                 <span style={{ color: "green" }}>You are under budget</span>
+              ) : dashboardDetails.balance.underBudget === null ? (
+                <span>No budget set</span>
               ) : (
                 <span style={{ color: "red" }}>You are not under budget</span>
               )

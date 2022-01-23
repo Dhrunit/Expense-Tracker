@@ -54,5 +54,16 @@ export default class RestApi {
     }
   };
 
-  put() {}
+  put = async (url, body, isAuth = false) => {
+    try {
+      if (isAuth) {
+        let result = await axios.put(url, body, this.config);
+        return result;
+      }
+      let result = await axios.put(url);
+      return result;
+    } catch (error) {
+      return error.response;
+    }
+  };
 }
