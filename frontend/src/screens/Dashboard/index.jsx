@@ -9,14 +9,21 @@ import DashboardCard from "../../components/DashboardCard";
 import DashboardGraph from "../../components/DashboardGraph";
 import SplashScreen from "./helper";
 import { useMediaQuery, useTheme, Backdrop } from "@mui/material";
+import CategoryExpenseChart from "../../components/CategoryExpenseChart";
 
 export default function Dashboard({ collapsed, isMobile }) {
   const theme = useTheme();
   const isMobileBackdrop = useMediaQuery(theme.breakpoints.down("lg"));
 
   const dispatch = useDispatch();
-  const { loading, isNewUser, dashboardDetails, incomeSeries, expenseSeries } =
-    useSelector((state) => state.dashboard);
+  const {
+    loading,
+    isNewUser,
+    dashboardDetails,
+    incomeSeries,
+    expenseSeries,
+    categorySeries,
+  } = useSelector((state) => state.dashboard);
   const [openBackdrop, setOpenBackdrop] = useState(isNewUser);
   useEffect(() => {
     dispatch(getDashboardDetails());
@@ -53,6 +60,16 @@ export default function Dashboard({ collapsed, isMobile }) {
               collapsed={collapsed}
               incomeSeries={incomeSeries}
               expenseSeries={expenseSeries}
+            />
+          </Grid>
+        )}
+      </div>
+      <div style={{ padding: "1rem" }}>
+        {!loading && !isNewUser && dashboardDetails.currency && (
+          <Grid container spacing={4}>
+            <CategoryExpenseChart
+              collapsed={collapsed}
+              categorySeries={categorySeries}
             />
           </Grid>
         )}
