@@ -12,6 +12,7 @@ const dashboardReducer = (
     isNewUser: false,
     incomeSeries: [],
     expenseSeries: [],
+    categorySeries: [],
   },
   action
 ) => {
@@ -20,9 +21,13 @@ const dashboardReducer = (
     case GET_DASHBOARD_DETAILS_SUCCESS:
       let incomeSeries = [];
       let expenseSeries = [];
+      let categorySeries = [];
       for (const months in payload.chartData) {
         incomeSeries.push(payload.chartData[months].income);
         expenseSeries.push(payload.chartData[months].expense);
+      }
+      for (const categoryData in payload.categoryChartData) {
+        categorySeries.push(payload.categoryChartData[categoryData]);
       }
       return {
         dashboardDetails: payload,
@@ -30,6 +35,7 @@ const dashboardReducer = (
         isNewUser: false,
         incomeSeries: incomeSeries,
         expenseSeries: expenseSeries,
+        categorySeries: categorySeries,
       };
     case NEW_USER_DASHBOARD:
       return {
@@ -38,6 +44,7 @@ const dashboardReducer = (
         isNewUser: true,
         incomeSeries: [],
         expenseSeries: [],
+        categorySeries: [],
       };
     case GET_DASHBOARD_DETAILS_FAIL:
       return {
@@ -45,6 +52,7 @@ const dashboardReducer = (
         loading: false,
         incomeSeries: [],
         expenseSeries: [],
+        categorySeries: [],
       };
     case SET_LOADER_DASHBOARD:
       return { ...state, loading: true };

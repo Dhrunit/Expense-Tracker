@@ -31,6 +31,24 @@ const getDashboardDetails = async (req, res, next) => {
         november: { income: 0, expense: 0 },
         december: { income: 0, expense: 0 },
       },
+      categoryChartData: {
+        bills: 0,
+        car: 0,
+        clothes: 0,
+        communications: 0,
+        eatingOut: 0,
+        entertainment: 0,
+        food: 0,
+        gifts: 0,
+        health: 0,
+        house: 0,
+        pets: 0,
+        sports: 0,
+        taxi: 0,
+        toiletry: 0,
+        transport: 0,
+        other: 0,
+      },
     };
     let date = new Date().getFullYear().toString();
     let walletDetails = await Wallet.findById(userWalletId).populate(
@@ -50,7 +68,6 @@ const getDashboardDetails = async (req, res, next) => {
       dataToSend.balance.underBudget = null;
     }
     for (const transaction of walletDetails.transactions) {
-      console.log();
       if (
         transaction.type === "income" &&
         transaction.month === month.toLowerCase()
@@ -63,9 +80,15 @@ const getDashboardDetails = async (req, res, next) => {
         dataToSend.expense += transaction.amount;
       }
       if (dataToSend.chartData[transaction.month]) {
-        if (transaction.type === "income") {
+        if (
+          transaction.type === "income" &&
+          transaction.date.split("/")[2] === date
+        ) {
           dataToSend.chartData[transaction.month].income += transaction.amount;
-        } else {
+        } else if (
+          transaction.type === "expense" &&
+          transaction.date.split("/")[2] === date
+        ) {
           dataToSend.chartData[transaction.month].expense += transaction.amount;
         }
       }
@@ -102,6 +125,13 @@ const getDashboardDetails = async (req, res, next) => {
             totalExpenseInPreviusMonth) *
           100;
       }
+      if (
+        transaction.type === "expense" &&
+        transaction.date.split("/")[2] === date
+      ) {
+        dataToSend.categoryChartData[transaction.category] +=
+          transaction.amount;
+      }
     }
     res.status(200).send({
       success: true,
@@ -109,7 +139,6 @@ const getDashboardDetails = async (req, res, next) => {
       message: "Dashboard details fetched successfully",
     });
   } catch (error) {
-    console.log(error);
     return next(new HttpError("Internal Server error", 500));
   }
 };
