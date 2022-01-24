@@ -211,7 +211,7 @@ const getTransactionsForUser = async (req, res, next) => {
     if (!page || !page.trim()) {
       return next(new HttpError("Page missing in query params", 400));
     }
-    let limit = 10;
+    let limit = 8;
     let toSkip = parseInt(page - 1) * limit;
 
     const transactionsCount = await Transaction.find({
@@ -227,7 +227,8 @@ const getTransactionsForUser = async (req, res, next) => {
     })
       .skip(toSkip)
       .limit(limit)
-      .select(["title", "category", "amount", "note"]);
+      .select(["title", "category", "amount", "note", "type", "wallet"])
+      .populate("wallet");
     if (!transactions) {
       return next(
         new HttpError("An error occured while fetching transactions", 400)

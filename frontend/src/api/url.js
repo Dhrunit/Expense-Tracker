@@ -10,6 +10,7 @@ let url = {
   deleteWallet: baseUrl + "api/wallet/deleteWallet/",
   editWallet: baseUrl + "api/wallet/editWallet",
   getIndividualWallet: baseUrl + "api/wallet/getWallet/",
+  getTransactions: baseUrl + "api/transaction/getTransactions/",
 };
 
 export default url;
