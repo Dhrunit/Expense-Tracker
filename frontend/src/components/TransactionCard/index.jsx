@@ -1,8 +1,27 @@
-import { Grid, IconButton, Menu, MenuItem, Paper } from "@mui/material";
+import {
+  CircularProgress,
+  IconButton,
+  Menu,
+  MenuItem,
+  Paper,
+  Tooltip,
+} from "@mui/material";
 import React, { useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-const TransactionCard = ({ category, title, note, amount, type, currency }) => {
+const TransactionCard = ({
+  id,
+  categoryIcon,
+  category,
+  title,
+  note,
+  amount,
+  type,
+  currency,
+  onEdit,
+  onDelete,
+  individualLoader,
+}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -12,39 +31,48 @@ const TransactionCard = ({ category, title, note, amount, type, currency }) => {
     setAnchorEl(null);
   };
   return (
-    <Paper sx={{ p: 2, position: "relative" }}>
+    <Paper sx={{ p: 2, position: "relative" }} elevation={4}>
       <IconButton
         sx={{ position: "absolute", right: 10, top: 10 }}
         onClick={handleClick}
       >
         <MoreVertIcon />
       </IconButton>
-      <div
+      <Tooltip title={category}>
+        <div
+          style={{
+            backgroundColor: "#744FC2",
+            width: "70px",
+            height: "70px",
+            borderRadius: "50%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            margin: "1rem auto",
+          }}
+        >
+          {categoryIcon}
+        </div>
+      </Tooltip>
+      <h3
         style={{
-          backgroundColor: "#744FC2",
-          width: "70px",
-          height: "70px",
-          borderRadius: "50%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          margin: "1rem auto",
+          textAlign: "center",
+          marginBottom: "1rem",
         }}
       >
-        {category}
-      </div>
-      <h3 style={{ textAlign: "center", marginBottom: "1rem" }}>{title}</h3>
-      <p style={{ textAlign: "center", marginBottom: "1rem" }}>{note}</p>
+        {title.length > 20 ? title.substring(0, 20) + "..." : title}
+      </h3>
+      <p style={{ textAlign: "center", marginBottom: "1rem" }}>
+        {note.length > 20 ? note.substring(0, 20) + "..." : note}
+      </p>
       <p style={{ textAlign: "center", marginBottom: "1rem" }}>
         {type === "expense" ? (
           <span style={{ color: "red" }}>
-            {" "}
             - {amount}
             {currency}
           </span>
         ) : (
           <span style={{ color: "green" }}>
-            {" "}
             + {amount}
             {currency}
           </span>
@@ -58,8 +86,10 @@ const TransactionCard = ({ category, title, note, amount, type, currency }) => {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem>"Edit"</MenuItem>
-        <MenuItem>"Delete"</MenuItem>
+        <MenuItem onClick={() => onEdit(id)}>
+          {individualLoader ? <CircularProgress color="primary" /> : "Edit"}
+        </MenuItem>
+        <MenuItem>Delete</MenuItem>
       </Menu>
     </Paper>
   );

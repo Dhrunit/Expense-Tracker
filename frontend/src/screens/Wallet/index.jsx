@@ -279,7 +279,7 @@ const Wallet = ({ collapsed, isMobile }) => {
       <DialogBox
         onClose={closeDialog}
         open={dialogOpen}
-        title={"Add wallet"}
+        title={isEditMode ? "Edit Wallet" : "Add wallet"}
         content={
           <WalletModalContent
             isEditMode={isEditMode}

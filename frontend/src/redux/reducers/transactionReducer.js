@@ -2,6 +2,8 @@ import {
   SET_TRANSACTION_LOADER,
   GET_TRANSACTIONS_SUCCESS,
   GET_TRANSACTIONS_FAIL,
+  SET_TRANSACTION_INDIVIDUAL_FAIL,
+  SET_TRANSACTION_INDIVIDUAL_SUCCESS,
 } from "../constants/transactionConstants";
 
 const transactionReducer = (
@@ -17,7 +19,7 @@ const transactionReducer = (
     case GET_TRANSACTIONS_SUCCESS:
       return {
         selectedTransaction: state.selectedTransaction,
-        transactions: payload,
+        transactions: payload.data,
         loading: false,
       };
     case GET_TRANSACTIONS_FAIL:
@@ -30,6 +32,16 @@ const transactionReducer = (
       return {
         ...state,
         loading: true,
+      };
+    case SET_TRANSACTION_INDIVIDUAL_FAIL:
+      return {
+        ...state,
+        selectedTransaction: {},
+      };
+    case SET_TRANSACTION_INDIVIDUAL_SUCCESS:
+      return {
+        ...state,
+        selectedTransaction: payload,
       };
     default:
       return state;
