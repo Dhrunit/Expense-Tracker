@@ -12,6 +12,8 @@ let url = {
   getIndividualWallet: baseUrl + "api/wallet/getWallet/",
   getTransactions: baseUrl + "api/transaction/getTransactions/",
   getTransaction: baseUrl + "api/transaction/getTransaction/",
+  deleteTransaction: baseUrl + "api/transaction/deleteTransaction/",
+  addTransaction: baseUrl + "api/transaction/addTransaction",
 };
 
 export default url;

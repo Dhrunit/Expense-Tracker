@@ -89,7 +89,9 @@ const TransactionCard = ({
         <MenuItem onClick={() => onEdit(id)}>
           {individualLoader ? <CircularProgress color="primary" /> : "Edit"}
         </MenuItem>
-        <MenuItem>Delete</MenuItem>
+        <MenuItem onClick={() => onDelete(id)}>
+          {individualLoader ? <CircularProgress color="primary" /> : "Delete"}
+        </MenuItem>
       </Menu>
     </Paper>
   );

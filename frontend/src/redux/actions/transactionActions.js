@@ -34,7 +34,7 @@ export const getTransactions = (page, walletId) => async (dispatch) => {
 };
 
 export const getIndividualTransaction =
-  (transactionId, setIndividualLoader) => async (dispatch) => {
+  (transactionId, setIndividualLoader, setDialog) => async (dispatch) => {
     setIndividualLoader(true);
     let result = await new RestApi().get(
       url.getTransaction,
@@ -47,11 +47,42 @@ export const getIndividualTransaction =
         type: SET_TRANSACTION_INDIVIDUAL_SUCCESS,
         payload: result.data.data,
       });
+      setDialog(true);
     } else {
       setIndividualLoader(false);
       dispatch({
         type: SET_TRANSACTION_INDIVIDUAL_FAIL,
       });
       dispatch(setAlert(result.data.message, "error"));
+    }
+  };
+
+export const deleteTransaction =
+  (id, setLoader, page, walletId) => async (dispatch) => {
+    setLoader(true);
+    let result = await new RestApi().delete(url.deleteTransaction, true, id);
+    if (result.status === 201) {
+      dispatch(setAlert(result.data.message, "success"));
+      dispatch(getTransactions(page, walletId));
+      setLoader(false);
+    } else {
+      dispatch(setAlert(result.data.message, "error"));
+      setLoader(false);
+    }
+  };
+
+export const addTransaction =
+  (body, setLoader, page, walletId, closeDialogAndEmptyData) =>
+  async (dispatch) => {
+    setLoader(true);
+    let result = await new RestApi().post(url.addTransaction, body, true);
+    if (result.status === 201) {
+      dispatch(setAlert(result.data.message, "success"));
+      dispatch(getTransactions(page, walletId));
+      setLoader(false);
+      closeDialogAndEmptyData();
+    } else {
+      dispatch(setAlert(result.data.message, "error"));
+      setLoader(false);
     }
   };

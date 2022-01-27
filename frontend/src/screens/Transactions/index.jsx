@@ -5,6 +5,8 @@ import { MainContent } from "../../common/style";
 import HistoryIcon from "@mui/icons-material/History";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addTransaction,
+  deleteTransaction,
   getIndividualTransaction,
   getTransactions,
 } from "../../redux/actions/transactionActions";
@@ -14,7 +16,8 @@ import TransactionCard from "../../components/TransactionCard";
 import returnTransactionCount from "../../utils/returnTransactionIcon";
 import Button from "../../components/Button";
 import DialogBox from "../../components/DialogBox";
-import { TransactionDialogActions } from "./helper";
+import moment from "moment";
+import { TransactionDialogActions, TransactionDialogContent } from "./helper";
 const Transactions = ({ isMobile, collapsed }) => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
@@ -24,11 +27,11 @@ const Transactions = ({ isMobile, collapsed }) => {
   const [isEditMode, setEditMode] = useState(false);
   const [error, setError] = useState([]);
   const [title, setTitle] = useState("");
-  const [typeOfTransaction, setTypeOfTransaction] = useState("");
-  const [categoryOfTransaction, setCategoryOfTransaction] = useState("");
+  const [typeOfTransaction, setTypeOfTransaction] = useState("expense");
+  const [categoryOfTransaction, setCategoryOfTransaction] = useState("bills");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(new Date());
 
   const { userDetails } = useSelector((state) => state.auth);
   const { transactions, selectedTransaction, loading } = useSelector(
@@ -40,11 +43,129 @@ const Transactions = ({ isMobile, collapsed }) => {
     }
   }, [userDetails, page, dispatch]);
 
+  useEffect(() => {
+    if (selectedTransaction.title) {
+      let dateFormatted =
+        selectedTransaction.date.split("/")[1] +
+        "/" +
+        selectedTransaction.date.split("/")[0] +
+        "/" +
+        selectedTransaction.date.split("/")[2];
+      setTitle(selectedTransaction.title);
+      setTypeOfTransaction(selectedTransaction.type);
+      setCategoryOfTransaction(selectedTransaction.category);
+      setAmount(selectedTransaction.amount);
+      setNote(selectedTransaction.note);
+      setDate(new Date(dateFormatted));
+      setEditMode(true);
+      setError([]);
+    }
+  }, [selectedTransaction]);
+
   const onEdit = (transactionId) => {
-    dispatch(getIndividualTransaction(transactionId, setIndividualLoader));
+    dispatch(
+      getIndividualTransaction(
+        transactionId,
+        setIndividualLoader,
+        setDialogOpen
+      )
+    );
   };
 
-  const onDelete = (transactionId) => {};
+  const onDelete = (transactionId) => {
+    dispatch(
+      deleteTransaction(
+        transactionId,
+        setIndividualLoader,
+        page,
+        userDetails.activeWallet
+      )
+    );
+  };
+  const handleDate = (newValue) => {
+    if (!newValue) {
+      setDate("Invalid Date");
+    } else {
+      setDate(newValue);
+    }
+  };
+
+  const validateForm = () => {
+    let error = [];
+    if (!title.trim()) {
+      error = [...error, "title"];
+    } else {
+      error = error.filter((err) => err !== "title");
+    }
+    if (!typeOfTransaction.trim()) {
+      error = [...error, "typeOfTransaction"];
+    } else {
+      error = error.filter((err) => err !== "typeOfTransaction");
+    }
+    if (!categoryOfTransaction.trim()) {
+      error = [...error, "categoryOfTransaction"];
+    } else {
+      error = error.filter((err) => err !== "categoryOfTransaction");
+    }
+    if (!amount.trim()) {
+      error = [...error, "amount"];
+    } else {
+      error = error.filter((err) => err !== "amount");
+    }
+    if (!note.trim()) {
+      error = [...error, "note"];
+    } else {
+      error = error.filter((err) => err !== "note");
+    }
+    if (!date) {
+      error = [...error, "date"];
+    } else {
+      error = error.filter((err) => err !== "date");
+    }
+    setError(error);
+    return error;
+  };
+
+  const postTransaction = () => {
+    let result = validateForm();
+    if (result.length === 0) {
+      let postBody = {};
+      postBody.title = title;
+      postBody.wallet = userDetails.activeWallet;
+      postBody.note = note;
+      postBody.category = categoryOfTransaction;
+      postBody.type = typeOfTransaction;
+      postBody.amount = amount;
+      postBody.date = `${date.getDate()}/${
+        date.getMonth() + 1
+      }/${date.getFullYear()}`;
+      dispatch(
+        addTransaction(
+          postBody,
+          setDialogLoader,
+          page,
+          userDetails.activeWallet,
+          closeDialogAndEmptyData
+        )
+      );
+    }
+  };
+
+  const postEditTransaction = (transactionId) => {
+    let result = validateForm();
+    if (result.length === 0) {
+      let postBody = {};
+      postBody.title = title;
+      postBody.transactionId = transactionId;
+      postBody.note = note;
+      postBody.category = categoryOfTransaction;
+      postBody.type = typeOfTransaction;
+      postBody.amount = amount;
+      postBody.date = `${date.getDate()}/${
+        date.getMonth() + 1
+      }/${date.getFullYear()}`;
+    }
+  };
 
   const handlePage = (event, value) => {
     setPage(value);
@@ -55,6 +176,12 @@ const Transactions = ({ isMobile, collapsed }) => {
   };
 
   const closeDialogAndEmptyData = () => {
+    setTitle("");
+    setTypeOfTransaction("expense");
+    setCategoryOfTransaction("bills");
+    setAmount("");
+    setNote("");
+    setDate(new Date());
     setError([]);
     setDialogOpen(false);
     setEditMode(false);
@@ -122,7 +249,7 @@ const Transactions = ({ isMobile, collapsed }) => {
                           currency={"Rs"}
                           onEdit={(id) => onEdit(id)}
                           individualLoader={individualLoader}
-                          onDelete={onDelete}
+                          onDelete={(id) => onDelete(id)}
                         />
                       </Grid>
                     ))}
@@ -180,12 +307,30 @@ const Transactions = ({ isMobile, collapsed }) => {
         onClose={closeDialog}
         open={dialogOpen}
         title={isEditMode ? "Edit Transaction" : "Add Transaction"}
-        content={"asdasdas"}
+        content={
+          <TransactionDialogContent
+            title={title}
+            setTitle={setTitle}
+            typeOfTransaction={typeOfTransaction}
+            setTypeOfTransaction={setTypeOfTransaction}
+            categoryOfTransaction={categoryOfTransaction}
+            setCategoryOfTransaction={setCategoryOfTransaction}
+            amount={amount}
+            setAmount={setAmount}
+            transactionNote={note}
+            date={date}
+            setDate={handleDate}
+            setTransactionNote={setNote}
+            error={error}
+          />
+        }
         dialogActionContent={
           <TransactionDialogActions
             type={isEditMode ? "editTransaction" : "addTransaction"}
             loading={dialogLoader}
-            onClick={() => console.log("called")}
+            onClick={() =>
+              isEditMode ? postEditTransaction() : postTransaction()
+            }
           />
         }
       />
