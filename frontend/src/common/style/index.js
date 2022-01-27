@@ -17,11 +17,15 @@ export const BrandHeading = styled.h1`
   font-size: 40px;
 `;
 
-export const BrandSvgImage = () => {
+export const BrandSvgImage = ({ noMarginStyle = false, width = false }) => {
   return (
     <img
       src={BrandSvg}
-      style={{ display: "block", margin: "0 auto", width: "90px" }}
+      style={{
+        display: "block",
+        margin: noMarginStyle ? "0" : "0 auto",
+        width: width ? width : "90px",
+      }}
       alt="brandimage"
     />
   );

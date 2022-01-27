@@ -11,6 +11,8 @@ const transactionReducer = (
     transactions: [],
     selectedTransaction: {},
     loading: false,
+    currency: "",
+    paginationCount: 0,
   },
   action
 ) => {
@@ -20,11 +22,15 @@ const transactionReducer = (
       return {
         selectedTransaction: state.selectedTransaction,
         transactions: payload.data,
+        currency: payload.currency.split(" ")[1],
+        paginationCount: payload.lastPage,
         loading: false,
       };
     case GET_TRANSACTIONS_FAIL:
       return {
         selectedTransaction: state.selectedTransaction,
+        currency: "",
+        paginationCount: 0,
         transactions: [],
         loading: false,
       };

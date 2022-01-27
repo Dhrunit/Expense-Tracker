@@ -68,13 +68,11 @@ const TransactionCard = ({
       <p style={{ textAlign: "center", marginBottom: "1rem" }}>
         {type === "expense" ? (
           <span style={{ color: "red" }}>
-            - {amount}
-            {currency}
+            - {amount} {currency}
           </span>
         ) : (
           <span style={{ color: "green" }}>
-            + {amount}
-            {currency}
+            + {amount} {currency}
           </span>
         )}
       </p>

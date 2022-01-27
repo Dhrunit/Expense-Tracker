@@ -14,6 +14,7 @@ let url = {
   getTransaction: baseUrl + "api/transaction/getTransaction/",
   deleteTransaction: baseUrl + "api/transaction/deleteTransaction/",
   addTransaction: baseUrl + "api/transaction/addTransaction",
+  editTransaction: baseUrl + "api/transaction/editTransaction",
 };
 
 export default url;

@@ -9,6 +9,7 @@ import {
   deleteTransaction,
   getIndividualTransaction,
   getTransactions,
+  editTransaction,
 } from "../../redux/actions/transactionActions";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import CalculateIcon from "@mui/icons-material/Calculate";
@@ -16,7 +17,7 @@ import TransactionCard from "../../components/TransactionCard";
 import returnTransactionCount from "../../utils/returnTransactionIcon";
 import Button from "../../components/Button";
 import DialogBox from "../../components/DialogBox";
-import moment from "moment";
+
 import { TransactionDialogActions, TransactionDialogContent } from "./helper";
 const Transactions = ({ isMobile, collapsed }) => {
   const dispatch = useDispatch();
@@ -34,9 +35,13 @@ const Transactions = ({ isMobile, collapsed }) => {
   const [date, setDate] = useState(new Date());
 
   const { userDetails } = useSelector((state) => state.auth);
-  const { transactions, selectedTransaction, loading } = useSelector(
-    (state) => state.transaction
-  );
+  const {
+    transactions,
+    selectedTransaction,
+    loading,
+    paginationCount,
+    currency,
+  } = useSelector((state) => state.transaction);
   useEffect(() => {
     if (userDetails.activeWallet) {
       dispatch(getTransactions(page, userDetails.activeWallet));
@@ -54,7 +59,7 @@ const Transactions = ({ isMobile, collapsed }) => {
       setTitle(selectedTransaction.title);
       setTypeOfTransaction(selectedTransaction.type);
       setCategoryOfTransaction(selectedTransaction.category);
-      setAmount(selectedTransaction.amount);
+      setAmount(selectedTransaction.amount.toString());
       setNote(selectedTransaction.note);
       setDate(new Date(dateFormatted));
       setEditMode(true);
@@ -151,12 +156,12 @@ const Transactions = ({ isMobile, collapsed }) => {
     }
   };
 
-  const postEditTransaction = (transactionId) => {
+  const postEditTransaction = () => {
     let result = validateForm();
     if (result.length === 0) {
       let postBody = {};
       postBody.title = title;
-      postBody.transactionId = transactionId;
+      postBody.transactionId = selectedTransaction._id;
       postBody.note = note;
       postBody.category = categoryOfTransaction;
       postBody.type = typeOfTransaction;
@@ -164,6 +169,15 @@ const Transactions = ({ isMobile, collapsed }) => {
       postBody.date = `${date.getDate()}/${
         date.getMonth() + 1
       }/${date.getFullYear()}`;
+      dispatch(
+        editTransaction(
+          postBody,
+          setDialogLoader,
+          page,
+          userDetails.activeWallet,
+          closeDialogAndEmptyData
+        )
+      );
     }
   };
 
@@ -218,7 +232,9 @@ const Transactions = ({ isMobile, collapsed }) => {
                     height: "2.5rem",
                     margin: "0 !important",
                   }}
-                  onClick={() => setDialogOpen(true)}
+                  onClick={() =>
+                    userDetails.activeWallet && setDialogOpen(true)
+                  }
                 >
                   Add
                 </Button>
@@ -246,58 +262,94 @@ const Transactions = ({ isMobile, collapsed }) => {
                           note={transaction.note}
                           amount={transaction.amount}
                           type={transaction.type}
-                          currency={"Rs"}
+                          currency={currency ? currency : ""}
                           onEdit={(id) => onEdit(id)}
                           individualLoader={individualLoader}
                           onDelete={(id) => onDelete(id)}
                         />
                       </Grid>
                     ))}
-                  {!loading && transactions.length === 0 && (
-                    <Grid
-                      item
-                      xl={12}
-                      lg={12}
-                      md={12}
-                      sm={12}
-                      xs={12}
-                      sx={{ textAlign: "center" }}
-                    >
-                      <CalculateIcon
-                        sx={{
-                          width: "100px",
-                          height: "100px",
-                          color: "#744FC2",
-                        }}
-                      />
-                      <BusinessCenterIcon
-                        sx={{
-                          width: "100px",
-                          height: "100px",
-                          color: "#98BAE7",
-                        }}
-                      />
-                      <p style={{ margin: "1rem" }}>
-                        Please add a transaction to manage your transactions and
-                        make the most out of the platform
-                      </p>
-                    </Grid>
-                  )}
+                  {!loading &&
+                    transactions.length === 0 &&
+                    userDetails.activeWallet && (
+                      <Grid
+                        item
+                        xl={12}
+                        lg={12}
+                        md={12}
+                        sm={12}
+                        xs={12}
+                        sx={{ textAlign: "center" }}
+                      >
+                        <CalculateIcon
+                          sx={{
+                            width: "100px",
+                            height: "100px",
+                            color: "#744FC2",
+                          }}
+                        />
+                        <BusinessCenterIcon
+                          sx={{
+                            width: "100px",
+                            height: "100px",
+                            color: "#98BAE7",
+                          }}
+                        />
+                        <p style={{ margin: "1rem" }}>
+                          Please add a transaction to manage your transactions
+                          and make the most out of the platform
+                        </p>
+                      </Grid>
+                    )}
+                  {!loading &&
+                    transactions.length === 0 &&
+                    !userDetails.activeWallet && (
+                      <Grid
+                        item
+                        xl={12}
+                        lg={12}
+                        md={12}
+                        sm={12}
+                        xs={12}
+                        sx={{ textAlign: "center" }}
+                      >
+                        <CalculateIcon
+                          sx={{
+                            width: "100px",
+                            height: "100px",
+                            color: "#744FC2",
+                          }}
+                        />
+                        <BusinessCenterIcon
+                          sx={{
+                            width: "100px",
+                            height: "100px",
+                            color: "#98BAE7",
+                          }}
+                        />
+                        <p style={{ margin: "1rem" }}>
+                          Please add an active wallet first and then you can
+                          manage your transactions
+                        </p>
+                      </Grid>
+                    )}
                 </Grid>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <Pagination
-                    count={2}
-                    page={page}
-                    color="primary"
-                    shape="rounded"
-                    onChange={handlePage}
-                  />
-                </div>
+                {paginationCount !== 0 && paginationCount !== 1 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <Pagination
+                      count={paginationCount}
+                      page={page}
+                      color="primary"
+                      shape="rounded"
+                      onChange={handlePage}
+                    />
+                  </div>
+                )}
               </div>
             </Paper>
           )}

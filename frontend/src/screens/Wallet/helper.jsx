@@ -190,7 +190,9 @@ const WalletDialogActions = ({ type, loading, onClick }) => {
           disabled={loading}
         >
           {loading ? (
-            <CircularProgress style={{ width: "25px", height: "25px" }} />
+            <CircularProgress
+              style={{ width: "25px", height: "25px", color: "#fff" }}
+            />
           ) : (
             "Save"
           )}
@@ -213,7 +215,9 @@ const WalletDialogActions = ({ type, loading, onClick }) => {
           disabled={loading}
         >
           {loading ? (
-            <CircularProgress style={{ width: "25px", height: "25px" }} />
+            <CircularProgress
+              style={{ width: "25px", height: "25px", color: "#fff" }}
+            />
           ) : (
             "Update"
           )}

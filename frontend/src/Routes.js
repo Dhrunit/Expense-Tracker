@@ -6,6 +6,7 @@ import Sidebar from "./components/Sidebar";
 import { isRegistered } from "./redux/actions/authActions";
 import Dashboard from "./screens/Dashboard";
 import Login from "./screens/Login";
+import NotFound from "./screens/NotFound";
 import Profile from "./screens/Profile";
 import Signup from "./screens/Signup";
 import Transactions from "./screens/Transactions";
@@ -59,6 +60,7 @@ const AppRoutes = () => {
         <Routes>
           <Route path="/" element={<Login />} exact />
           <Route path="/signup" element={<Signup />} exact />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     );

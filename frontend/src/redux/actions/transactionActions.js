@@ -86,3 +86,19 @@ export const addTransaction =
       setLoader(false);
     }
   };
+
+export const editTransaction =
+  (body, setLoader, page, walletId, closeDialogAndEmptyData) =>
+  async (dispatch) => {
+    setLoader(true);
+    let result = await new RestApi().put(url.editTransaction, body, true);
+    if (result.status === 201) {
+      dispatch(setAlert(result.data.message, "success"));
+      dispatch(getTransactions(page, walletId));
+      setLoader(false);
+      closeDialogAndEmptyData();
+    } else {
+      dispatch(setAlert(result.data.message, "error"));
+      setLoader(false);
+    }
+  };

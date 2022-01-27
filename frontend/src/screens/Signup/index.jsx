@@ -111,7 +111,11 @@ export default function Signup() {
                 onClick={signupUser}
                 disabled={auth.loading}
               >
-                {auth.loading ? <CircularProgress /> : "Sign Up"}
+                {auth.loading ? (
+                  <CircularProgress style={{ color: "#fff" }} />
+                ) : (
+                  "Sign Up"
+                )}
               </Button>
               <div
                 style={{

@@ -214,6 +214,8 @@ const getTransactionsForUser = async (req, res, next) => {
     let limit = 8;
     let toSkip = parseInt(page - 1) * limit;
 
+    const walletDetails = await Wallet.findById(walletId);
+
     const transactionsCount = await Transaction.find({
       wallet: walletId,
       user: req.user.id,
@@ -235,13 +237,14 @@ const getTransactionsForUser = async (req, res, next) => {
       );
     }
     let lastPage =
-      Math.floor(transactionsCount / parseInt(limit)) === 0
+      Math.ceil(transactionsCount / parseInt(limit)) === 0
         ? 1
-        : Math.floor(transactionsCount / parseInt(limit));
+        : Math.ceil(transactionsCount / parseInt(limit));
     res.send({
       success: true,
       data: transactions,
       lastPage: lastPage,
+      currency: walletDetails.currency,
       message: "Transaction fetched successfully",
     });
   } catch (error) {

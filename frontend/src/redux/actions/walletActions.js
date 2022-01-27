@@ -1,5 +1,6 @@
 import RestApi from "../../api/restApi";
 import url from "../../api/url";
+import { LOGIN_SUCCESS } from "../constants/authConstants";
 import {
   SET_USER_WALLETDETAILS_SUCCESS,
   SET_USER_WALLETDETAILS_FAIL,
@@ -45,10 +46,19 @@ export const addWallet =
     });
     let result = await new RestApi().post(url.addWallet, body, true);
     if (result.status === 201) {
+      let authDetails = JSON.parse(localStorage.getItem("ExpTrackerDetails"));
       dispatch(setAlert(result.data.message, "success"));
       dispatch({
         type: REMOVE_WALLET_DIALOG_LOADER,
       });
+      if (result.data.walletId) {
+        authDetails.activeWallet = result.data.walletId;
+        localStorage.setItem("ExpTrackerDetails", JSON.stringify(authDetails));
+        dispatch({
+          type: LOGIN_SUCCESS,
+          payload: authDetails,
+        });
+      }
       dispatch(getWalletDetails(page));
       closeDialogAndEmptyData();
     } else {
@@ -96,12 +106,19 @@ export const getIndividualWallet =
   };
 
 export const editWallet =
-  (body, closeDialogAndEmptyData, page) => async (dispatch) => {
+  (body, closeDialogAndEmptyData, page, dispatchAuthDetails, authDetails) =>
+  async (dispatch) => {
     dispatch({
       type: SET_WALLET_DIALOG_LOADER,
     });
     let result = await new RestApi().put(url.editWallet, body, true);
     if (result.status === 201) {
+      if (dispatchAuthDetails) {
+        dispatch({
+          type: LOGIN_SUCCESS,
+          payload: authDetails,
+        });
+      }
       dispatch({
         type: REMOVE_WALLET_DIALOG_LOADER,
       });

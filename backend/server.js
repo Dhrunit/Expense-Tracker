@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import colors from "colors";
+import schedule from "node-schedule";
 import morgan from "morgan";
 import cors from "cors";
 const app = express();
@@ -10,6 +11,7 @@ import transactionRoutes from "./routes/transactionRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import connectDB from "./config/db.js";
 import { errorHandler, notFound } from "./middlewares/errorMiddleware.js";
+import { resetBalance } from "./utils/cron.js";
 
 dotenv.config();
 connectDB();
@@ -28,6 +30,10 @@ app.get("/", (req, res) => {
 
 app.use(errorHandler);
 app.use(notFound);
+
+schedule.scheduleJob("0 0 * * *", async function () {
+  resetBalance();
+});
 
 const PORT = process.env.PORT || 5000;
 

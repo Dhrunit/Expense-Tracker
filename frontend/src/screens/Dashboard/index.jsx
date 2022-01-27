@@ -24,10 +24,16 @@ export default function Dashboard({ collapsed, isMobile }) {
     expenseSeries,
     categorySeries,
   } = useSelector((state) => state.dashboard);
-  const [openBackdrop, setOpenBackdrop] = useState(isNewUser);
+  const [openBackdrop, setOpenBackdrop] = useState(false);
   useEffect(() => {
     dispatch(getDashboardDetails());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (isNewUser) {
+      setOpenBackdrop(true);
+    }
+  }, [isNewUser]);
   return (
     <MainContent isMobile={isMobile} collapsed={collapsed}>
       {loading && (
