@@ -1,4 +1,4 @@
-let baseUrl = "http://localhost:5000/";
+let baseUrl = "https://expensee-tracker-pwa.herokuapp.com/";
 
 let url = {
   login: baseUrl + "api/users/login",
