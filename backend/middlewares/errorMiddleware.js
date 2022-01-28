@@ -5,7 +5,8 @@ const notFound = (req, res, next) => {
 };
 
 const errorHandler = (err, req, res, next) => {
-  const statusCode = res.statusCode === 200 ? err.code : res.statusCode;
+  let statusCode = res.statusCode === 200 ? err.code : res.statusCode;
+  statusCode === "ENOENT" ? (statusCode = 200) : (statusCode = statusCode);
   res.status(statusCode);
   res.json({
     success: false,
