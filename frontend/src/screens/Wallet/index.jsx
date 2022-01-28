@@ -46,14 +46,16 @@ const Wallet = ({ collapsed, isMobile }) => {
   }, [dispatch, page]);
 
   useEffect(() => {
-    setWalletName(selectedWalletDetails.name);
-    setCurrency(selectedWalletDetails.currency);
-    setisActiveWallet(selectedWalletDetails.isActiveWallet);
-    setAddBudget(selectedWalletDetails.hasBudget);
-    setInitialBalance(selectedWalletDetails.balance?.toString());
-    setBudgetAmount(selectedWalletDetails.budgetAmount?.toString());
-    setResetBalance(selectedWalletDetails.resetBalance);
-    setError([]);
+    if (selectedWalletDetails.name) {
+      setWalletName(selectedWalletDetails.name);
+      setCurrency(selectedWalletDetails.currency);
+      setisActiveWallet(selectedWalletDetails.isActiveWallet);
+      setAddBudget(selectedWalletDetails.hasBudget);
+      setInitialBalance(selectedWalletDetails.balance?.toString());
+      setBudgetAmount(selectedWalletDetails.budgetAmount?.toString());
+      setResetBalance(selectedWalletDetails.resetBalance);
+      setError([]);
+    }
   }, [selectedWalletDetails]);
 
   const handlePage = (event, value) => {
@@ -65,6 +67,8 @@ const Wallet = ({ collapsed, isMobile }) => {
 
   const postEditWallet = () => {
     let error = validateForm();
+    let dispatchAuthDetails = false;
+    let authDetails = JSON.parse(localStorage.getItem("ExpTrackerDetails"));
     let postbody = { walletId: selectedWalletDetails._id };
     if (walletName.trim() && walletName.length > 6) {
       postbody.name = walletName;
@@ -77,6 +81,44 @@ const Wallet = ({ collapsed, isMobile }) => {
       postbody.budgetAmount = 0;
     }
     if (error.length === 0) {
+      // not active in local and tries active
+      // set local
+      if (
+        !authDetails.activeWallet &&
+        selectedWalletDetails.isActiveWallet === false &&
+        isActiveWallet
+      ) {
+        console.log("1");
+        authDetails.activeWallet = selectedWalletDetails._id;
+        localStorage.setItem("ExpTrackerDetails", JSON.stringify(authDetails));
+        dispatchAuthDetails = true;
+      }
+      if (
+        authDetails.activeWallet &&
+        selectedWalletDetails.isActiveWallet === false &&
+        isActiveWallet
+      ) {
+        console.log("2");
+        authDetails.activeWallet = selectedWalletDetails._id;
+        localStorage.setItem("ExpTrackerDetails", JSON.stringify(authDetails));
+        dispatchAuthDetails = true;
+      }
+      if (!authDetails.activeWallet && isActiveWallet) {
+        console.log("3");
+        authDetails.activeWallet = selectedWalletDetails._id;
+        localStorage.setItem("ExpTrackerDetails", JSON.stringify(authDetails));
+        dispatchAuthDetails = true;
+      }
+      if (
+        authDetails.activeWallet &&
+        !isActiveWallet &&
+        authDetails.activeWallet === selectedWalletDetails._id
+      ) {
+        console.log("4");
+        delete authDetails.activeWallet;
+        localStorage.setItem("ExpTrackerDetails", JSON.stringify(authDetails));
+        dispatchAuthDetails = true;
+      }
       postbody.currency = currency;
       postbody.isActiveWallet = isActiveWallet;
       if (addBudget) {
@@ -84,7 +126,15 @@ const Wallet = ({ collapsed, isMobile }) => {
       } else {
         postbody.hasBudget = false;
       }
-      dispatch(editWallet(postbody, closeDialogAndEmptyData, page));
+      dispatch(
+        editWallet(
+          postbody,
+          closeDialogAndEmptyData,
+          page,
+          dispatchAuthDetails,
+          authDetails
+        )
+      );
     }
   };
 
@@ -262,15 +312,17 @@ const Wallet = ({ collapsed, isMobile }) => {
                     </Grid>
                   )}
                 </Grid>
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                  <Pagination
-                    count={paginationCount}
-                    page={page}
-                    color="primary"
-                    shape="rounded"
-                    onChange={handlePage}
-                  />
-                </div>
+                {paginationCount !== 0 && paginationCount !== 1 && (
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Pagination
+                      count={paginationCount}
+                      page={page}
+                      color="primary"
+                      shape="rounded"
+                      onChange={handlePage}
+                    />
+                  </div>
+                )}
               </Paper>
             </Grid>
           </Grid>
@@ -279,7 +331,7 @@ const Wallet = ({ collapsed, isMobile }) => {
       <DialogBox
         onClose={closeDialog}
         open={dialogOpen}
-        title={"Add wallet"}
+        title={isEditMode ? "Edit Wallet" : "Add wallet"}
         content={
           <WalletModalContent
             isEditMode={isEditMode}

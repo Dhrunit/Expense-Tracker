@@ -211,8 +211,10 @@ const getTransactionsForUser = async (req, res, next) => {
     if (!page || !page.trim()) {
       return next(new HttpError("Page missing in query params", 400));
     }
-    let limit = 10;
+    let limit = 8;
     let toSkip = parseInt(page - 1) * limit;
+
+    const walletDetails = await Wallet.findById(walletId);
 
     const transactionsCount = await Transaction.find({
       wallet: walletId,
@@ -227,20 +229,22 @@ const getTransactionsForUser = async (req, res, next) => {
     })
       .skip(toSkip)
       .limit(limit)
-      .select(["title", "category", "amount", "note"]);
+      .select(["title", "category", "amount", "note", "type", "wallet"])
+      .populate("wallet");
     if (!transactions) {
       return next(
         new HttpError("An error occured while fetching transactions", 400)
       );
     }
     let lastPage =
-      Math.floor(transactionsCount / parseInt(limit)) === 0
+      Math.ceil(transactionsCount / parseInt(limit)) === 0
         ? 1
-        : Math.floor(transactionsCount / parseInt(limit));
+        : Math.ceil(transactionsCount / parseInt(limit));
     res.send({
       success: true,
       data: transactions,
       lastPage: lastPage,
+      currency: walletDetails.currency,
       message: "Transaction fetched successfully",
     });
   } catch (error) {

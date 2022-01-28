@@ -23,12 +23,8 @@ const DialogBox = ({ onClose, open, title, content, dialogActionContent }) => {
           }}
         >
           <h4>{title}</h4>
-          <IconButton>
-            {" "}
-            <CloseIcon
-              sx={{ height: "1.5rem", width: "1.5rem" }}
-              onClick={onClose}
-            />
+          <IconButton onClick={onClose}>
+            <CloseIcon sx={{ height: "1.5rem", width: "1.5rem" }} />
           </IconButton>
         </div>
       </DialogTitle>

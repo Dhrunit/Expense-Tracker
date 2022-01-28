@@ -94,7 +94,11 @@ export default function Login() {
                 onClick={loginUser}
                 disabled={auth.loading}
               >
-                {auth.loading ? <CircularProgress /> : "Sign In"}
+                {auth.loading ? (
+                  <CircularProgress style={{ color: "#fff" }} />
+                ) : (
+                  "Sign In"
+                )}
               </Button>
               <div
                 style={{

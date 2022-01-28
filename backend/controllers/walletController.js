@@ -27,6 +27,11 @@ const addWallet = async (req, res, next) => {
       isActiveWallet,
     } = req.body;
 
+    const activeWalletExist = await Wallet.find({ isActiveWallet: true });
+    if (!activeWalletExist) {
+      return next(new HttpError("Internal server error", 500));
+    }
+
     // Calculate reset time
     let resetTime;
     if (resetBalance) {
@@ -87,11 +92,27 @@ const addWallet = async (req, res, next) => {
         return next(new HttpError("Linking the wallet with user failed", 400));
       }
     }
-    res.status(201).send({
-      success: true,
-      data: { wallet },
-      message: "Wallet added successfully",
-    });
+    if (activeWalletExist.length === 0 && isActiveWallet) {
+      res.status(201).send({
+        success: true,
+        walletId: wallet._id,
+        data: { wallet },
+        message: "Wallet added successfully",
+      });
+    } else if (isActiveWallet) {
+      res.status(201).send({
+        success: true,
+        data: { wallet },
+        walletId: wallet._id,
+        message: "Wallet added successfully",
+      });
+    } else {
+      res.status(201).send({
+        success: true,
+        data: { wallet },
+        message: "Wallet added successfully",
+      });
+    }
   } catch (error) {
     console.log(error);
     return next(new HttpError("Internal Server error", 500));

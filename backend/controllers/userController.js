@@ -28,6 +28,7 @@ const authUser = async (req, res, next) => {
           isAdmin: user.isAdmin,
           pictureUrl: user.pictureUrl,
           token: generateToken(user._id),
+          activeWallet: user.activeWallet,
         },
         message: "Login successful",
       });
