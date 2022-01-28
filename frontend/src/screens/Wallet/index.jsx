@@ -88,7 +88,6 @@ const Wallet = ({ collapsed, isMobile }) => {
         selectedWalletDetails.isActiveWallet === false &&
         isActiveWallet
       ) {
-        console.log("1");
         authDetails.activeWallet = selectedWalletDetails._id;
         localStorage.setItem("ExpTrackerDetails", JSON.stringify(authDetails));
         dispatchAuthDetails = true;
@@ -98,13 +97,11 @@ const Wallet = ({ collapsed, isMobile }) => {
         selectedWalletDetails.isActiveWallet === false &&
         isActiveWallet
       ) {
-        console.log("2");
         authDetails.activeWallet = selectedWalletDetails._id;
         localStorage.setItem("ExpTrackerDetails", JSON.stringify(authDetails));
         dispatchAuthDetails = true;
       }
       if (!authDetails.activeWallet && isActiveWallet) {
-        console.log("3");
         authDetails.activeWallet = selectedWalletDetails._id;
         localStorage.setItem("ExpTrackerDetails", JSON.stringify(authDetails));
         dispatchAuthDetails = true;
@@ -114,7 +111,6 @@ const Wallet = ({ collapsed, isMobile }) => {
         !isActiveWallet &&
         authDetails.activeWallet === selectedWalletDetails._id
       ) {
-        console.log("4");
         delete authDetails.activeWallet;
         localStorage.setItem("ExpTrackerDetails", JSON.stringify(authDetails));
         dispatchAuthDetails = true;

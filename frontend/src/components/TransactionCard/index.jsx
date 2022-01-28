@@ -1,11 +1,4 @@
-import {
-  CircularProgress,
-  IconButton,
-  Menu,
-  MenuItem,
-  Paper,
-  Tooltip,
-} from "@mui/material";
+import { IconButton, Menu, MenuItem, Paper, Tooltip } from "@mui/material";
 import React, { useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
@@ -84,11 +77,11 @@ const TransactionCard = ({
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={() => onEdit(id)}>
-          {individualLoader ? <CircularProgress color="primary" /> : "Edit"}
+        <MenuItem onClick={() => !individualLoader && onEdit(id)}>
+          Edit
         </MenuItem>
-        <MenuItem onClick={() => onDelete(id)}>
-          {individualLoader ? <CircularProgress color="primary" /> : "Delete"}
+        <MenuItem onClick={() => !individualLoader && onDelete(id)}>
+          Delete
         </MenuItem>
       </Menu>
     </Paper>

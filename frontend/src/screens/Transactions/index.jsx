@@ -140,7 +140,7 @@ const Transactions = ({ isMobile, collapsed }) => {
       postBody.note = note;
       postBody.category = categoryOfTransaction;
       postBody.type = typeOfTransaction;
-      postBody.amount = amount;
+      postBody.amount = parseInt(amount);
       postBody.date = `${date.getDate()}/${
         date.getMonth() + 1
       }/${date.getFullYear()}`;
@@ -165,7 +165,7 @@ const Transactions = ({ isMobile, collapsed }) => {
       postBody.note = note;
       postBody.category = categoryOfTransaction;
       postBody.type = typeOfTransaction;
-      postBody.amount = amount;
+      postBody.amount = parseInt(amount);
       postBody.date = `${date.getDate()}/${
         date.getMonth() + 1
       }/${date.getFullYear()}`;
