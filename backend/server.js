@@ -25,7 +25,7 @@ app.disable("etag");
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
-app.get("api/test", (req, res) => {
+app.get("/api/test", (req, res) => {
   res.send("API is running....");
 });
 app.use("/api/users", userRoutes);
